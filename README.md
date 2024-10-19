@@ -13,4 +13,7 @@ Ideal for sailors, navigators, and students of celestial navigation.
 ## Author
 - Kevin Veen-Birkenbach  
 - 🌐 [Website](https://www.yachtmaster.world)  
-- 📧 kevin@veen.world  
+- 📧 kevin@veen.world
+
+---
+This repository was created with the help of [AI](https://chatgpt.com/c/67138609-6ab8-800f-a091-a42e04bf3c9f). 
