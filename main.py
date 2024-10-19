@@ -17,9 +17,11 @@ def calculate_time():
 
 def calculate_altitude():
     print("Altitude Calculation\n")
+    
     # ALTITUDE INPUTS
     sextant_altitude_str = Helper.get_input("Enter sextant altitude (SA in D°M'S\" format): ")
-    index_error = float(Helper.get_input("Enter index error (IE, positive or negative): "))
+    index_error_str = Helper.get_input("Enter index error (IE, in D°M'S\" format): ")
+    index_error = Helper.parse_dms(index_error_str)  # Use parse_dms to convert the input to a decimal value
 
     # Celestial Navigation Calculations
     celestial_navigation = CelestialNavigation(sextant_altitude_str, index_error, 0, 0)  # Placeholder for monthly_correction and declination
