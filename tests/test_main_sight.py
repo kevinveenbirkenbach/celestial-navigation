@@ -1,6 +1,6 @@
 import unittest
 from datetime import timedelta
-from core.transit_time import TransitTimeCalculator
+from core.transit_time import TransitTime
 from core.celestial import CelestialNavigation
 from core.helper import Helper
 
@@ -15,7 +15,7 @@ class TestMainSight(unittest.TestCase):
         expected_transit_time = "13:30:04"  # Transitzeit an EP aus dem Beispiel
 
         # Transit Time Calculation
-        calculator = TransitTimeCalculator(longitude_str, transit_greenwich_str)
+        calculator = TransitTime(longitude_str, transit_greenwich_str)
         transit_ep_time = calculator.calculate_transit_time_at_ep()
 
         # Konvertiere das Ergebnis in eine Zeitdarstellung

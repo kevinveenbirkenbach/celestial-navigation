@@ -1,23 +1,16 @@
-from .helper import Helper
+from .degree import Degree
+from .index_error import IndexError
+from .corrections import CorrectionSum
+class Altitude(Degree):
+    """Represents an Altitude value in degrees."""
 
-class Altitude:
-    def __init__(self, sextant_altitude_str, index_error, monthly_correction):
-        self.sextant_altitude = Helper.parse_dms(sextant_altitude_str)  # Eingabe in DMS, Umwandlung in Dezimalgrad
-        self.index_error = index_error
-        self.monthly_correction = monthly_correction
+class AltitudeSextant(Altitude):
+    """Represents an Sextant Altitude value in degrees."""
 
-        # Calculate observed altitude
-        self.observed_altitude = self.calculate_observed_altitude()
+class AltitudeObserved(Altitude):
+    def __init__(self, altitude_sextant: AltitudeSextant, index_error: IndexError):
+        super.__init__(altitude_sextant.decimal + index_error.decimal)
 
-    def calculate_observed_altitude(self):
-        """Calculate the observed altitude."""
-        return self.sextant_altitude + self.index_error
-
-    def calculate_total_correction(self):
-        """Calculate the total correction."""
-        return self.index_error + self.monthly_correction
-
-    def calculate_true_altitude(self):
-        """Calculate the true altitude."""
-        total_correction = self.calculate_total_correction()
-        return self.observed_altitude + total_correction
+class AltitudeTrue(Altitude):
+    def __init__(self, altitude_sextant: AltitudeSextant, correction_sum: CorrectionSum):
+        super.__init__(altitude_sextant.decimal - correction_sum.decimal)
