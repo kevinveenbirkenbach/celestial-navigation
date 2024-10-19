@@ -8,7 +8,7 @@ class Helper:
         dms_pattern = re.compile(r"(?P<degrees>-?\d+\.?\d*)°(?P<minutes>\d*\.?\d*)'(?P<seconds>\d*\.?\d*)\"?(?P<direction>[EWNS])?")
         match = dms_pattern.match(input_str)
         if not match:
-            raise ValueError("Invalid format. Use D°M'S\" format.")
+            raise ValueError(f"Invalid format. Use D°M'S\" format instead of {input_str}.")
         
         degrees = float(match.group('degrees'))
         minutes = float(match.group('minutes')) if match.group('minutes') else 0
@@ -25,12 +25,22 @@ class Helper:
 
     @staticmethod
     def parse_time_input(time_str):
-        """Parse time input in hh:mm format and return a timedelta object."""
+        """Parse time input in hh:mm or hh:mm:ss format and return a timedelta object."""
         try:
-            hh, mm = map(int, time_str.split(':'))
-            return timedelta(hours=hh, minutes=mm)
+            # Split the input based on the colon separator
+            parts = list(map(int, time_str.split(':')))
+
+            if len(parts) == 2:  # Format: hh:mm
+                hh, mm = parts
+                ss = 0  # Default to zero seconds if not provided
+            elif len(parts) == 3:  # Format: hh:mm:ss
+                hh, mm, ss = parts
+            else:
+                raise ValueError("Invalid time format. Use hh:mm or hh:mm:ss format.")
+            
+            return timedelta(hours=hh, minutes=mm, seconds=ss)
         except ValueError:
-            raise ValueError("Invalid time format. Use hh:mm format (e.g., 12:30 for 12 hours 30 minutes).")
+            raise ValueError("Invalid time format. Use hh:mm or hh:mm:ss format.")
     
     @staticmethod
     def get_input(prompt):
