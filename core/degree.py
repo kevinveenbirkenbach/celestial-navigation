@@ -5,11 +5,11 @@ class Degree:
         if isinstance(value, str):
             self.string  = value
             self.decimal = self.ddmmss_to_decimal(value)
-        elif isinstance(value, int):
+        elif isinstance(value, int) or isinstance(value, float):
             self.decimal = value
             self.string= self.decimal_to_ddmmss(value)
         else:
-            raise TypeError(f"The value '{value}' is of the wrong type. Expected type is 'int' or 'float', but got {type(value).__name__}.")
+            raise TypeError(f"The value '{value}' is of the wrong type: {type(value).__name__}.")
 
     def ddmmss_to_decimal(self, input_str):
         """Parse a string in the format of degrees, minutes, and seconds to decimal degrees."""
@@ -31,19 +31,7 @@ class Degree:
         
         return decimal_degrees
     
-    def decimal_to_ddmmss(decimal_degrees: float, is_latitude: bool = True) -> str:
-        """
-        Convert a decimal degree value to a D°M'S" string format with direction.
-
-        Args:
-        - decimal_degrees (float): The decimal degree value.
-        - is_latitude (bool): If True, treat as latitude (N/S). If False, treat as longitude (E/W).
-
-        Returns:
-        - str: The formatted D°M'S" string.
-        """
-
-        # Determine the direction based on the sign of decimal_degrees and whether it's latitude or longitude
+    def decimal_to_ddmmss(self, decimal_degrees: float, is_latitude: bool = True) -> str:
         if is_latitude:
             direction = 'N' if decimal_degrees >= 0 else 'S'
         else:
