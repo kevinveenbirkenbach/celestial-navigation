@@ -32,34 +32,20 @@ def calculate_altitude():
     print(f"Observed Altitude (OA): {observed_altitude}")
 
     # Now that Observed Altitude is available, request Total Corrections
-    total_correction = float(Helper.get_input("Enter total correction (from table): "))
+    total_correction_str = Helper.get_input("Enter total correction (from table): ")
+    total_correction = Helper.parse_dms(total_correction_str)  # Verwende parse_dms für den D°M'S" Wert
     altitude.monthly_correction = total_correction
 
     # Calculate True Altitude
     true_altitude = altitude.calculate_true_altitude()
     print(f"True Altitude (TA): {true_altitude}")
 
-def calculate_latitude():
+def calculate_latitude(true_altitude=False):
     print("Latitude Calculation\n")
-    
-    # ALTITUDE INPUTS
-    sextant_altitude_str = Helper.get_input("Enter sextant altitude (SA in D°M'S\" format): ")
-    index_error_str = Helper.get_input("Enter index error (IE, in D°M'S\" format): ")
-    index_error = Helper.parse_dms(index_error_str)
 
-    # Altitude Calculation
-    altitude = Altitude(sextant_altitude_str, index_error, 0)  # Placeholder for monthly_correction
-
-    # Calculate Observed Altitude
-    observed_altitude = altitude.calculate_observed_altitude()
-    print(f"Observed Altitude (OA): {observed_altitude}")
-
-    # Now that Observed Altitude is available, request Total Corrections
-    total_correction = float(Helper.get_input("Enter total correction (from table): "))
-    altitude.monthly_correction = total_correction
-
-    # Calculate True Altitude
-    true_altitude = altitude.calculate_true_altitude()
+    if not true_altitude:
+        # ALTITUDE INPUTS
+        true_altitude = Helper.get_input("Enter True Altitute (DEC in D°M'S\" format): ")
 
     # LATITUDE INPUTS
     declination_str = Helper.get_input("Enter declination (DEC in D°M'S\" format): ")
@@ -86,9 +72,12 @@ def main():
     if "time" in args.calculations:
         calculate_time()
     if "altitude" in args.calculations:
-        calculate_altitude()
+        true_altitude = calculate_altitude()
     if "latitude" in args.calculations:
-        calculate_latitude()
+        if true_altitude:
+            calculate_latitude(true_altitude)
+        else:
+            calculate_latitude()
 
 if __name__ == "__main__":
     main()
