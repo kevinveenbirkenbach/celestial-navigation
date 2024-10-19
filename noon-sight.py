@@ -1,4 +1,5 @@
 import re
+from datetime import datetime, timedelta
 
 def parse_dms(input_str):
     """Parse a string in the format of degrees, minutes, and seconds to decimal degrees."""
@@ -43,6 +44,14 @@ def calculate_latitude(declination, true_altitude):
     else:
         return declination - ZD
 
+def parse_time_input(time_str):
+    """Parse time input in h.m format and return a datetime object."""
+    try:
+        hh, mm = map(int, time_str.split(':'))
+        return timedelta(hours=hh, minutes=mm)
+    except ValueError:
+        raise ValueError("Invalid time format. Use hh:mm format (e.g., 12:30 for 12 hours 30 minutes).")
+
 def main():
     print("Noon Sight Calculation Pro Forma\n")
 
@@ -52,7 +61,20 @@ def main():
     arc_to_time = calculate_arc_to_time(estimated_longitude)
     print(f"Arc to time: {arc_to_time} minutes")
 
-    transit_greenwich = get_input("Enter GMT transit time at Greenwich (h.m format): ")
+    transit_greenwich_str = get_input("Enter GMT transit time at Greenwich (hh:mm format): ")
+    transit_greenwich = parse_time_input(transit_greenwich_str)
+
+    # Calculate transit time at EP
+    arc_to_time_delta = timedelta(minutes=arc_to_time)
+
+    if estimated_longitude < 0:  # West longitude, subtract arc to time
+        transit_ep = transit_greenwich - arc_to_time_delta
+    else:  # East longitude, add arc to time
+        transit_ep = transit_greenwich + arc_to_time_delta
+
+    transit_ep_time = str(transit_ep)
+
+    print(f"Transit Time at EP: {transit_ep_time}")
 
     # ALTITUDE INPUTS
     sextant_altitude = get_input("Enter sextant altitude (SA in D°M'S\" format): ")
