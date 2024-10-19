@@ -17,14 +17,13 @@ def main():
     # ALTITUDE INPUTS
     sextant_altitude_str = Helper.get_input("Enter sextant altitude (SA in D°M'S\" format): ")
     index_error = float(Helper.get_input("Enter index error (IE, positive or negative): "))
-    observed_altitude_str = Helper.get_input("Enter observed altitude (OA in D°M'S\" format): ")
     monthly_correction = float(Helper.get_input("Enter monthly correction (from table): "))
 
     # LATITUDE INPUTS
     declination_str = Helper.get_input("Enter declination (DEC in D°M'S\" format): ")
 
     # Celestial Navigation Calculations
-    celestial_navigation = CelestialNavigation(sextant_altitude_str, index_error, observed_altitude_str, monthly_correction, declination_str)
+    celestial_navigation = CelestialNavigation(sextant_altitude_str, index_error, monthly_correction, declination_str)
     true_altitude = celestial_navigation.calculate_true_altitude()
     latitude = celestial_navigation.calculate_latitude()
 

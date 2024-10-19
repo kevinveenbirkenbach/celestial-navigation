@@ -1,12 +1,18 @@
 from .helper import Helper
 
 class CelestialNavigation:
-    def __init__(self, sextant_altitude_str, index_error, observed_altitude_str, monthly_correction, declination_str):
-        self.sextant_altitude = Helper.parse_dms(sextant_altitude_str)
+    def __init__(self, sextant_altitude_str, index_error, monthly_correction, declination_str):
+        self.sextant_altitude = Helper.parse_dms(sextant_altitude_str)  # Eingabe in DMS, Umwandlung in Dezimalgrad
         self.index_error = index_error
-        self.observed_altitude = Helper.parse_dms(observed_altitude_str)
         self.monthly_correction = monthly_correction
-        self.declination = Helper.parse_dms(declination_str)
+        self.declination = Helper.parse_dms(declination_str)  # Deklination in DMS, Umwandlung in Dezimalgrad
+
+        # Calculating observed altitude
+        self.observed_altitude = self.calculate_observed_altitude()
+
+    def calculate_observed_altitude(self):
+        """Calculate the observed altitude."""
+        return self.sextant_altitude + self.index_error
 
     def calculate_total_correction(self):
         """Calculate the total correction."""
