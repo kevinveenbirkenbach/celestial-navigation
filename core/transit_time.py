@@ -21,3 +21,15 @@ class TransitTimeCalculator:
             transit_ep = self.transit_greenwich + arc_to_time_delta
 
         return transit_ep
+
+    def get_arc_to_time_string(self):
+        """Calculate arc to time from longitude."""
+        arc_to_time_delta = timedelta(minutes=self.calculate_arc_to_time())
+        
+        # Converting timedelta to hours, minutes, and seconds
+        total_seconds = int(arc_to_time_delta.total_seconds())
+        hours, remainder = divmod(total_seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+
+        # Return arc to time in hh:mm:ss format
+        return f"{hours:02}:{minutes:02}:{seconds:02}"
