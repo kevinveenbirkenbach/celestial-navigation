@@ -1,6 +1,7 @@
 import argparse
 from core.transit_time import TransitTimeCalculator
-from core.celestial import CelestialNavigation
+from core.altitude import Altitude
+from core.latitude import Latitude
 from core.helper import Helper
 
 def calculate_time():
@@ -23,48 +24,52 @@ def calculate_altitude():
     index_error_str = Helper.get_input("Enter index error (IE, in D°M'S\" format): ")
     index_error = Helper.parse_dms(index_error_str)  # Use parse_dms to convert the input to a decimal value
 
-    # Celestial Navigation Calculations
-    celestial_navigation = CelestialNavigation(sextant_altitude_str, index_error, 0, 0)  # Placeholder for monthly_correction and declination
+    # Altitude Calculation
+    altitude = Altitude(sextant_altitude_str, index_error, 0)  # Placeholder for monthly_correction
 
     # Calculate Observed Altitude
-    observed_altitude = celestial_navigation.calculate_observed_altitude()
+    observed_altitude = altitude.calculate_observed_altitude()
     print(f"Observed Altitude (OA): {observed_altitude}")
 
     # Now that Observed Altitude is available, request Total Corrections
     total_correction = float(Helper.get_input("Enter total correction (from table): "))
-    celestial_navigation.monthly_correction = total_correction
+    altitude.monthly_correction = total_correction
 
     # Calculate True Altitude
-    true_altitude = celestial_navigation.calculate_true_altitude()
+    true_altitude = altitude.calculate_true_altitude()
     print(f"True Altitude (TA): {true_altitude}")
 
 def calculate_latitude():
     print("Latitude Calculation\n")
+    
     # ALTITUDE INPUTS
     sextant_altitude_str = Helper.get_input("Enter sextant altitude (SA in D°M'S\" format): ")
-    index_error = float(Helper.get_input("Enter index error (IE, positive or negative): "))
+    index_error_str = Helper.get_input("Enter index error (IE, in D°M'S\" format): ")
+    index_error = Helper.parse_dms(index_error_str)
 
-    # Celestial Navigation Calculations
-    celestial_navigation = CelestialNavigation(sextant_altitude_str, index_error, 0, 0)  # Placeholder for monthly_correction and declination
+    # Altitude Calculation
+    altitude = Altitude(sextant_altitude_str, index_error, 0)  # Placeholder for monthly_correction
 
     # Calculate Observed Altitude
-    observed_altitude = celestial_navigation.calculate_observed_altitude()
+    observed_altitude = altitude.calculate_observed_altitude()
     print(f"Observed Altitude (OA): {observed_altitude}")
 
     # Now that Observed Altitude is available, request Total Corrections
     total_correction = float(Helper.get_input("Enter total correction (from table): "))
-    celestial_navigation.monthly_correction = total_correction
+    altitude.monthly_correction = total_correction
+
+    # Calculate True Altitude
+    true_altitude = altitude.calculate_true_altitude()
 
     # LATITUDE INPUTS
     declination_str = Helper.get_input("Enter declination (DEC in D°M'S\" format): ")
-    celestial_navigation.declination = Helper.parse_dms(declination_str)
 
-    # Calculate True Altitude and Latitude
-    true_altitude = celestial_navigation.calculate_true_altitude()
-    latitude = celestial_navigation.calculate_latitude()
+    # Latitude Calculation
+    latitude = Latitude(true_altitude, declination_str)
+    lat = latitude.calculate_latitude()
 
     print(f"True Altitude (TA): {true_altitude}")
-    print(f"Latitude: {latitude}")
+    print(f"Latitude: {lat}")
 
 def main():
     parser = argparse.ArgumentParser(description="Celestial Navigation Calculations")

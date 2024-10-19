@@ -1,13 +1,12 @@
 from .helper import Helper
 
-class CelestialNavigation:
-    def __init__(self, sextant_altitude_str, index_error, monthly_correction, declination_str):
+class Altitude:
+    def __init__(self, sextant_altitude_str, index_error, monthly_correction):
         self.sextant_altitude = Helper.parse_dms(sextant_altitude_str)  # Eingabe in DMS, Umwandlung in Dezimalgrad
         self.index_error = index_error
         self.monthly_correction = monthly_correction
-        self.declination = Helper.parse_dms(declination_str)  # Deklination in DMS, Umwandlung in Dezimalgrad
 
-        # Calculating observed altitude
+        # Calculate observed altitude
         self.observed_altitude = self.calculate_observed_altitude()
 
     def calculate_observed_altitude(self):
@@ -22,12 +21,3 @@ class CelestialNavigation:
         """Calculate the true altitude."""
         total_correction = self.calculate_total_correction()
         return self.observed_altitude + total_correction
-
-    def calculate_latitude(self):
-        """Calculate the latitude using declination and true altitude (ZD = 90° - TA)."""
-        true_altitude = self.calculate_true_altitude()
-        ZD = 90 - true_altitude
-        if self.declination > true_altitude:
-            return ZD + self.declination
-        else:
-            return self.declination - ZD
