@@ -2,6 +2,7 @@ from .helper import Helper
 from .degree import Degree
 from .altitude import AltitudeTrue
 from .declination import Declination
+from .zenith_distance import ZenithDistance
 
 class Latitude(Degree):
     def __init__(self, value):
@@ -22,31 +23,27 @@ class CalculatedLatitude(Latitude):
     """Represents a Latitude value in degrees."""
     def __init__(self, altitude_true: AltitudeTrue, declination: Declination):
         self.declination = declination
-        self.altitude_true = altitude_true
-        self.zenith_distance = self.calculateZenithDistance()
+        self.zenith_distance = ZenithDistance(altitude_true)
         super().__init__(self.calculate_latitude())
-
-    def calculateZenithDistance(self):
-        return 90 - self.altitude_true.decimal
 
     def calculate_latitude(self):
         # Apply the rules based on the Noon Sight form:
-        if self.declination.string.endswith('N') and self.zenith_distance >= self.declination.decimal:
-            latitude_value = self.zenith_distance + self.declination.decimal
+        if self.declination.string.endswith('N') and self.zenith_distance.decimal >= self.declination.decimal:
+            latitude_value = self.zenith_distance.decimal + self.declination.decimal
             direction = 'N'
-        elif self.declination.string.endswith('S') and self.zenith_distance >= self.declination.decimal:
-            latitude_value = self.zenith_distance + self.declination.decimal
+        elif self.declination.string.endswith('S') and self.zenith_distance.decimal >= self.declination.decimal:
+            latitude_value = self.zenith_distance.decimal + self.declination.decimal
             direction = 'S'
-        elif self.declination.string.endswith('N') and self.zenith_distance < self.declination.decimal:
-            latitude_value = self.declination.decimal - self.zenith_distance
+        elif self.declination.string.endswith('N') and self.zenith_distance.decimal < self.declination.decimal:
+            latitude_value = self.declination.decimal.decimal - self.zenith_distance.decimal
             direction = 'N'
-        elif self.declination.string.endswith('S') and self.zenith_distance < self.declination.decimal:
-            latitude_value = self.declination.decimal - self.zenith_distance
+        elif self.declination.string.endswith('S') and self.zenith_distance.decimal < self.declination.decimal:
+            latitude_value = self.declination.decimal - self.zenith_distance.decimal
             direction = 'S'
         else:
             # Opposite hemispheres
-            latitude_value = self.zenith_distance - self.declination.decimal
-            direction = 'N' if self.zenith_distance > self.declination.decimal else 'S'
+            latitude_value = self.zenith_distance.decimal - self.declination.decimal
+            direction = 'N' if self.zenith_distance.decimal > self.declination.decimal else 'S'
 
         # Return the latitude with the correct sign based on the direction
         return latitude_value if direction == 'N' else -latitude_value
