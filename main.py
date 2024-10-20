@@ -63,11 +63,9 @@ def calculate_latitude(true_altitude=False):
     declination = Declination(declination_str)
 
     # Latitude Calculation
-    latitude = Latitude(true_altitude.decimal, declination.decimal)
-    lat = latitude.calculate_latitude()
-
-    print(f"True Altitude (TA): {true_altitude}")
-    print(f"Latitude: {lat}")
+    latitude = CalculatedLatitude(true_altitude, declination)
+    print(f"ZD: {latitude.zd}")
+    print(f"Latitude: {latitude}")
 
 def main():
     parser = argparse.ArgumentParser(description="Celestial Navigation Calculations")

@@ -10,6 +10,12 @@ A collection of Python scripts to assist with celestial navigation, providing to
 
 Ideal for sailors, navigators, and students of celestial navigation.
 
+### Unite Tests
+To run the tests execute:
+```bash 
+python -m unittest discover tests
+```
+
 ## Author
 - Kevin Veen-Birkenbach  
 - 🌐 [Website](https://www.yachtmaster.world)  

@@ -30,10 +30,7 @@ class CalculatedLatitude(Latitude):
         return 90 - self.altitude_true.decimal
 
     def calculate_latitude(self):
-        if self.declination > self.altitude_true:
-            return ZD + self.declination
+        if self.declination.decimal > self.altitude_true.decimal:
+            return self.zd + self.declination.decimal
         else:
-            return self.declination - ZD
-
-    def __str__(self):
-        return f"ZD: {self.zd} \n{super().__str__()}"
+            return self.declination.decimal - self.zd
