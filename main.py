@@ -1,9 +1,9 @@
 import argparse
 from core.transit_time import TransitTime
-from core.altitude import AltitudeObserved, AltitudeSextant, AltitudeTrue
+from core.altitude import AltitudeObserved, AltitudeSextant, AltitudeTrue, Altitude
 from core.corrections import CorrectionSum, CorrectionDIP, CorrectionMonthly
 from core.index_error import IndexError
-from core.latitude import Latitude
+from core.latitude import CalculatedLatitude
 from core.declination import Declination
 from core.longitude import Longitude
 from core.degree import Degree
@@ -56,7 +56,7 @@ def calculate_latitude(true_altitude=False):
 
     if not true_altitude:
         true_altitude_str = input("Enter True Altitute (DEC in D°M'S\" format): ")
-        true_altitude = Altitude(true_altitude_str)
+        true_altitude = AltitudeTrue(true_altitude_str)
 
     # LATITUDE INPUTS
     declination_str = input("Enter declination (DEC in D°M'S\" format): ")
