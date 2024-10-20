@@ -1,5 +1,5 @@
 import argparse
-from core.transit_time import TransitTime
+from core.time import UTCDatetime, ArcToTime, TransitTime
 from core.altitude import AltitudeObserved, AltitudeSextant, AltitudeTrue, Altitude
 from core.corrections import CorrectionSum, CorrectionDIP, CorrectionMonthly
 from core.index_error import IndexError
@@ -11,14 +11,18 @@ from core.degree import Degree
 def calculate_time():
     print("Time Calculation\n")
     # TIME INPUTS
-    longitude_str = input("Enter estimated longitude (in D°M'S\" format, with direction E/W): ")
+    longitude_str = input("Enter longitude (in D°M'S\" format, with direction E/W): ")
     longitude = Longitude(longitude_str)  # Verwende die Longitude Klasse
     
-    transit_greenwich_str = input("Enter GMT transit time at Greenwich (hh:mm:ss format): ")
+    arc_to_time = ArcToTime(longitude)
+    print(f"ARC to time: {arc_to_time}")
+
+    transit_greenwich_str = input("Enter GMT transit time at Greenwich (YYYY-MM-DDTHH:MM:SS format): ")
+    transit_greenwich = UTCDatetime(transit_greenwich_str)
 
     # Calculate transit time at EP
-    transit_calculator = TransitTime(longitude, transit_greenwich_str)
-    print(transit_calculator)
+    transit_calculator = TransitTime(arc_to_time, transit_greenwich)
+    print(f"Transit Time: {transit_calculator}")
 
 def calculate_altitude():
     print("Altitude Calculation\n")
