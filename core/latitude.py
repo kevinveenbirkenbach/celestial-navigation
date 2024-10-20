@@ -4,6 +4,12 @@ from .altitude import AltitudeTrue
 from .declination import Declination
 
 class Latitude(Degree):
+    def __init__(self, value):
+        super().__init__(value)
+        if not (-90 <= self.decimal <= 90):
+            raise ValueError(f"Altitude must be between -90° and 90°, but got {value}")
+        self.string = Helper.ensure_two_digit_degrees(self.string)
+
     """Represents a Latitude value in degrees."""
     def decimal_to_ddmmss(self, decimal_degrees: float) -> str:
         """Convert a decimal degree to a D°M'S" format with N/S direction."""

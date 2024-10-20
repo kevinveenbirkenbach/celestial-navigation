@@ -26,3 +26,27 @@ class Helper:
     @staticmethod
     def get_input(prompt):
         return input(prompt)
+
+    @staticmethod
+    def ensure_two_digit_degrees(degree_str: str) -> str:
+        """
+        Ensure the degree part of a string in D°M'S" format is exactly two digits.
+        Removes leading zero if degrees are three digits and adds leading zero if necessary.
+        """
+        # Find the position of the degree symbol
+        degree_symbol_pos = degree_str.find("°")
+        
+        # Extract the degrees part (everything before the degree symbol)
+        degrees_part = degree_str[:degree_symbol_pos]
+
+        # If the degrees part is three digits, remove the first character
+        if len(degrees_part) == 3:
+            degrees_two_digits = degrees_part[1:]
+        # If the degrees part is one digit, add a leading zero
+        elif len(degrees_part) == 1:
+            degrees_two_digits = '0' + degrees_part
+        else:
+            degrees_two_digits = degrees_part
+
+        # Return the modified string, replacing the degrees part with exactly two digits
+        return degrees_two_digits + degree_str[degree_symbol_pos:]
