@@ -3,31 +3,40 @@ from .helper import Helper
 from .longitude import Longitude
 from .degree import Degree
 
-class UTCDatetime:
-    def __init__(self, input_datetime):
+from datetime import datetime, timezone
+
+from datetime import datetime, timezone
+
+class UTCDatetime(datetime):
+    def __new__(cls, input_datetime):
         # Check if the input is already a datetime object
         if isinstance(input_datetime, datetime):
             # If the datetime object has a timezone, convert to UTC using astimezone()
             if input_datetime.tzinfo is not None:
-                self.datetime = input_datetime.astimezone(timezone.utc)
+                datetime_utc = input_datetime.astimezone(timezone.utc)
             else:
                 # If no timezone info, assume it's a naive datetime and set it to UTC
-                self.datetime = input_datetime.replace(tzinfo=timezone.utc)
+                datetime_utc = input_datetime.replace(tzinfo=timezone.utc)
         # Check if the input is a string
         elif isinstance(input_datetime, str):
             try:
                 # Parse the string using the format YYYY-MM-DDTHH:MM:SS
                 datetime_parsed = datetime.strptime(input_datetime, "%Y-%m-%dT%H:%M:%S")
                 # Set the timezone to UTC
-                self.datetime = datetime_parsed.replace(tzinfo=timezone.utc)
+                datetime_utc = datetime_parsed.replace(tzinfo=timezone.utc)
             except ValueError:
                 raise ValueError(f"Invalid date format. Expected 'YYYY-MM-DDTHH:MM:SS' but got {input_datetime}")
         else:
             raise TypeError(f"The value '{input_datetime}' is of the wrong type: {type(input_datetime).__name__}.")
 
+        # Return the new UTC datetime instance
+        return datetime_utc
+
     def __str__(self):
         # Return the datetime in ISO 8601 format (in UTC)
-        return self.datetime.isoformat()
+        return self.isoformat()
+
+
 
 class ArcToTime(timedelta):
     def __new__(cls, longitude: Longitude):
@@ -52,6 +61,9 @@ class ArcToTime(timedelta):
         return ArcToTime.get_arc_to_time_string(self)
 
 class TransitTime(UTCDatetime):
-    def __init__(self, arc_to_time: ArcToTime, transit_time_greenwich: UTCDatetime):
-        transit_time_at_longitude = transit_time_greenwich.datetime - arc_to_time
-        return super().__init__(transit_time_at_longitude)
+    def __new__(cls, arc_to_time: timedelta, transit_time_greenwich: UTCDatetime):
+        # Berechne die Transitzeit am Längengrad, indem die ARC-to-Time-Differenz subtrahiert wird
+        transit_time_at_longitude = transit_time_greenwich - arc_to_time
+        
+        # Erstelle eine neue UTCDatetime-Instanz mit der berechneten Zeit
+        return super().__new__(cls, transit_time_at_longitude)
