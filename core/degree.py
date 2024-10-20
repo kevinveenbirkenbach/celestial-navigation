@@ -3,15 +3,33 @@ import re
 class Degree:
     def __init__(self, value):
         if isinstance(value, str):
-            self.string  = value
-            self.decimal = self.ddmmss_to_decimal(value)
+            angle = Degree.ddmmss_to_decimal(value)
         elif isinstance(value, int) or isinstance(value, float):
-            self.decimal = value
-            self.string = self.decimal_to_ddmmss(value)
+            angle = value
         else:
             raise TypeError(f"The value '{value}' is of the wrong type: {type(value).__name__}.")
+        self.decimal = Degree.normalize_angle(angle)
+        self.string = Degree.decimal_to_ddmmss(self.decimal)
 
-    def ddmmss_to_decimal(self, input_str):
+    @staticmethod
+    def normalize_angle(angle):
+        """
+        Normalize an angle to be within the range [0, 360).
+        
+        Parameters:
+        angle (float): The angle to normalize.
+
+        Returns:
+        float: The normalized angle.
+        """
+        while angle >= 360:
+            angle -= 360
+        while angle <= -360:
+            angle += 360
+        return angle
+
+    @staticmethod
+    def ddmmss_to_decimal(input_str):
         """Parse a string in the format of degrees, minutes, and seconds to decimal degrees."""
         dms_pattern = re.compile(r"(?P<degrees>-?\d+\.?\d*)°(?P<minutes>\d*\.?\d*)'(?P<seconds>\d*\.?\d*)\"?(?P<direction>[EWNS])?")
         match = dms_pattern.match(input_str)
@@ -26,7 +44,8 @@ class Degree:
         
         return decimal_degrees
     
-    def decimal_to_ddmmss(self, decimal_degrees: float) -> str:
+    @staticmethod
+    def decimal_to_ddmmss(decimal_degrees: float) -> str:
         """
         Convert a decimal degree value to a D°M'S" string format without the direction.
         Subclasses should override this method to provide direction-specific formatting.

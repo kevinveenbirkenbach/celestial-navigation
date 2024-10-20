@@ -4,6 +4,13 @@ from core.helper import Helper
 from core.degree import Degree
 
 class TestLatitude(unittest.TestCase):
+    def test_latitude_north(self):
+        lat = Latitude(51.5074)  # Latitude of London
+        self.assertEqual(str(lat), "51°30'26.64\"N", "Failed for Latitude (North)")
+
+    def test_latitude_south(self):
+        lat = Latitude(-34.6037)  # Latitude of Buenos Aires
+        self.assertEqual(str(lat), "34°36'13.32\"S", "Failed for Latitude (South)")
 
     def test_valid_latitude_north(self):
         # Test a valid latitude in the northern hemisphere
