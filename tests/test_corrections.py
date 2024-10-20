@@ -26,11 +26,12 @@ class TestCorrections(unittest.TestCase):
         with self.assertRaises(ValueError):
             Correction(2.5)  # Should raise ValueError because it's greater than 2
 
-    def test_negative_correction(self):
+    def test_negative_outof_scope_correction(self):
         # Test for a negative correction (should raise an error)
         with self.assertRaises(ValueError):
-            Correction(-0.5)  # Should raise ValueError because it's less than 0
+            Correction(-0.1)  # Should raise ValueError because it's less than 0
 
+class TestCorrectionDIP(unittest.TestCase):
     def test_valid_dip_correction(self):
         # Test for a valid DIP correction
         correction_dip = CorrectionDIP(0.8)
@@ -46,6 +47,8 @@ class TestCorrections(unittest.TestCase):
         # Test for a negative DIP correction (should raise an error)
         with self.assertRaises(ValueError):
             CorrectionDIP(-0.2)  # Should raise ValueError because it's less than 0
+
+class TestCorrectionSum(unittest.TestCase):
 
     def test_valid_correction_sum(self):
         # Test for a valid correction sum (monthly + DIP)
