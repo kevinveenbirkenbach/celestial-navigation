@@ -2,8 +2,25 @@ import unittest
 from core.latitude import Latitude
 from core.helper import Helper
 from core.degree import Degree
+from core.altitude import AltitudeTrue
+from core.declination import Declination
+from core.latitude import CalculatedLatitude
 
 class TestLatitude(unittest.TestCase):
+    def test_latitude_calculation(self):
+        # Input values
+        true_altitude = AltitudeTrue("77°12.8'")
+        declination = Declination("04°17.2'S")
+        
+        # Expected values
+        expected_latitude_str = "08°30'00.00\"N"
+        
+        # Calculating Latitude
+        calculated_latitude = CalculatedLatitude(true_altitude, declination)
+        
+        # Test that the latitude string matches the expected value
+        self.assertEqual(str(calculated_latitude), expected_latitude_str, "Latitude calculation failed for N/S hemisphere")
+
     def test_latitude_north(self):
         lat = Latitude(51.5074)  # Latitude of London
         self.assertEqual(str(lat), "51°30'26.64\"N", "Failed for Latitude (North)")

@@ -23,14 +23,30 @@ class CalculatedLatitude(Latitude):
     def __init__(self, altitude_true: AltitudeTrue, declination: Declination):
         self.declination = declination
         self.altitude_true = altitude_true
-        self.zd = self.calculateZD()
+        self.zenith_distance = self.calculateZenithDistance()
         super().__init__(self.calculate_latitude())
 
-    def calculateZD(self):
+    def calculateZenithDistance(self):
         return 90 - self.altitude_true.decimal
 
     def calculate_latitude(self):
-        if self.declination.decimal > self.altitude_true.decimal:
-            return self.zd + self.declination.decimal
+        # Apply the rules based on the Noon Sight form:
+        if self.declination.string.endswith('N') and self.zenith_distance >= self.declination.decimal:
+            latitude_value = self.zenith_distance + self.declination.decimal
+            direction = 'N'
+        elif self.declination.string.endswith('S') and self.zenith_distance >= self.declination.decimal:
+            latitude_value = self.zenith_distance + self.declination.decimal
+            direction = 'S'
+        elif self.declination.string.endswith('N') and self.zenith_distance < self.declination.decimal:
+            latitude_value = self.declination.decimal - self.zenith_distance
+            direction = 'N'
+        elif self.declination.string.endswith('S') and self.zenith_distance < self.declination.decimal:
+            latitude_value = self.declination.decimal - self.zenith_distance
+            direction = 'S'
         else:
-            return self.declination.decimal - self.zd
+            # Opposite hemispheres
+            latitude_value = self.zenith_distance - self.declination.decimal
+            direction = 'N' if self.zenith_distance > self.declination.decimal else 'S'
+
+        # Return the latitude with the correct sign based on the direction
+        return latitude_value if direction == 'N' else -latitude_value
