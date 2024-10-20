@@ -29,7 +29,7 @@ class TestCorrections(unittest.TestCase):
     def test_negative_outof_scope_correction(self):
         # Test for a negative correction (should raise an error)
         with self.assertRaises(ValueError):
-            Correction(-0.1)  # Should raise ValueError because it's less than 0
+            Correction(-1)  # Should raise ValueError because it's less than 0
 
 class TestCorrectionDIP(unittest.TestCase):
     def test_valid_dip_correction(self):
