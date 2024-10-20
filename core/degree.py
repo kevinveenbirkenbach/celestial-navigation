@@ -7,7 +7,7 @@ class Degree:
             self.decimal = self.ddmmss_to_decimal(value)
         elif isinstance(value, int) or isinstance(value, float):
             self.decimal = value
-            self.string= self.decimal_to_ddmmss(value)
+            self.string = self.decimal_to_ddmmss(value)
         else:
             raise TypeError(f"The value '{value}' is of the wrong type: {type(value).__name__}.")
 
@@ -21,23 +21,17 @@ class Degree:
         degrees = float(match.group('degrees'))
         minutes = float(match.group('minutes')) if match.group('minutes') else 0
         seconds = float(match.group('seconds')) if match.group('seconds') else 0
-        direction = match.group('direction')
         
         decimal_degrees = degrees + minutes / 60 + seconds / 3600
         
-        # Adjust for direction (S and W are negative)
-        if direction in ['W', 'S']:
-            decimal_degrees = -abs(decimal_degrees)
-        
         return decimal_degrees
     
-    def decimal_to_ddmmss(self, decimal_degrees: float, is_latitude: bool = True) -> str:
-        if is_latitude:
-            direction = 'N' if decimal_degrees >= 0 else 'S'
-        else:
-            direction = 'E' if decimal_degrees >= 0 else 'W'
+    def decimal_to_ddmmss(self, decimal_degrees: float) -> str:
+        """
+        Convert a decimal degree value to a D°M'S" string format without the direction.
+        Subclasses should override this method to provide direction-specific formatting.
+        """
 
-        # Work with the absolute value for calculations
         abs_degrees = abs(decimal_degrees)
 
         # Extract degrees, minutes, and seconds
@@ -45,8 +39,8 @@ class Degree:
         minutes = int((abs_degrees - degrees) * 60)
         seconds = (abs_degrees - degrees - minutes / 60) * 3600
 
-        # Format into D°M'S" format
-        return f"{degrees}°{minutes}'{seconds:.2f}\"{direction}"
-
+        # Format into D°M'S" format (without direction)
+        return f"{degrees}°{minutes}'{seconds:.2f}\""
+    
     def __str__(self):
         return self.string
