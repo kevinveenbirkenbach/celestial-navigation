@@ -39,8 +39,18 @@ class Degree:
         minutes = int((abs_degrees - degrees) * 60)
         seconds = (abs_degrees - degrees - minutes / 60) * 3600
 
+        # Handle rounding errors that cause seconds to be 60.00
+        if round(seconds) == 60:
+            seconds = 0
+            minutes += 1
+
+        # If minutes reach 60, increment degrees and reset minutes
+        if round(minutes) == 60:
+            minutes = 0
+            degrees += 1
+
         # Format into D°M'S" format (without direction)
-        return f"{degrees}°{minutes}'{seconds:.2f}\""
+        return f"{degrees:03d}°{minutes:02d}'{seconds:05.2f}\""
     
     def __str__(self):
         return self.string

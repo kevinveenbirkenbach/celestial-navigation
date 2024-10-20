@@ -6,7 +6,7 @@ class TestMonthlyCorrections(unittest.TestCase):
         # Test for a valid negative monthly correction
         correction_monthly = CorrectionMonthly(-0.2)
         self.assertEqual(correction_monthly.decimal, -0.2, "Failed to set correct negative monthly correction value")
-        self.assertEqual(str(correction_monthly), "0°12'0.00\"", "String representation is incorrect for negative value")
+        self.assertEqual(str(correction_monthly), "000°12'00.00\"", "String representation is incorrect for negative value")
 
     def test_invalid_monthly_correction_out_of_bounds(self):
         # Test for an invalid monthly correction (out of bounds, too negative)
@@ -19,7 +19,7 @@ class TestCorrections(unittest.TestCase):
         # Test for a valid general correction
         correction = Correction(1.5)
         self.assertEqual(correction.decimal, 1.5, "Failed to set correct correction value")
-        self.assertEqual(str(correction), "1°30'0.00\"", "String representation is incorrect")
+        self.assertEqual(str(correction), "001°30'00.00\"", "String representation is incorrect")
 
     def test_invalid_correction(self):
         # Test for an invalid correction (out of bounds)
@@ -36,7 +36,7 @@ class TestCorrectionDIP(unittest.TestCase):
         # Test for a valid DIP correction
         correction_dip = CorrectionDIP(0.8)
         self.assertEqual(correction_dip.decimal, 0.8, "Failed to set correct DIP correction value")
-        self.assertEqual(str(correction_dip), "0°48'0.00\"", "String representation is incorrect")
+        self.assertEqual(str(correction_dip), "000°48'00.00\"", "String representation is incorrect")
 
     def test_invalid_dip_correction(self):
         # Test for an invalid DIP correction (out of bounds)
@@ -56,7 +56,7 @@ class TestCorrectionSum(unittest.TestCase):
         correction_dip = CorrectionDIP(0.5)
         correction_sum = CorrectionSum(correction_monthly, correction_dip)
         self.assertEqual(correction_sum.decimal, 0.7, "Failed to calculate correct correction sum")
-        self.assertEqual(correction_sum.string, "0°42'0.00\"", "String representation is incorrect")
+        self.assertEqual(correction_sum.string, "000°42'00.00\"", "String representation is incorrect")
 
     def test_negative_correction_sum(self):
         correction_monthly = CorrectionMonthly(-0.1)  # Monthly correction is negative

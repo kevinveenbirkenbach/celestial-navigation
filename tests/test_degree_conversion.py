@@ -15,15 +15,15 @@ class TestDegreeConversion(unittest.TestCase):
 
     def test_longitude_east(self):
         lon = Longitude(2.3522)  # Longitude of Paris
-        self.assertEqual(str(lon), "2°21'7.92\"E", "Failed for Longitude (East)")
+        self.assertEqual(str(lon), "002°21'07.92\"E", "Failed for Longitude (East)")
 
     def test_longitude_west(self):
         lon = Longitude(-74.0060)  # Longitude of New York
-        self.assertEqual(str(lon), "74°0'21.60\"W", "Failed for Longitude (West)")
+        self.assertEqual(str(lon), "074°00'21.60\"W", "Failed for Longitude (West)")
 
     def test_degree_no_direction(self):
         degree = Degree(45.1234)  # Generic degree without direction
-        self.assertEqual(str(degree), "45°7'24.24\"", "Failed for Degree without direction")
+        self.assertEqual(str(degree), "045°07'24.24\"", "Failed for Degree without direction")
 
 if __name__ == '__main__':
     unittest.main()
