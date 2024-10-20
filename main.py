@@ -86,9 +86,9 @@ def main():
     if "altitude" in args.calculations:
         true_altitude = calculate_altitude()
     if "latitude" in args.calculations:
-        if true_altitude:
+        try:
             calculate_latitude(true_altitude)
-        else:
+        except NameError:
             calculate_latitude()
 
 if __name__ == "__main__":
