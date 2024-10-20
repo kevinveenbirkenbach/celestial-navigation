@@ -62,7 +62,7 @@ class TestCorrectionSum(unittest.TestCase):
         correction_monthly = CorrectionMonthly(-0.1)  # Monthly correction is negative
         correction_dip = CorrectionDIP(0.3)
         correction_sum = CorrectionSum(correction_monthly, correction_dip)
-        self.assertEqual(correction_sum.decimal, 0.2, "Failed to calculate correct correction sum")
+        self.assertAlmostEqual(correction_sum.decimal, 0.2, places=7, msg="Failed to calculate correct correction sum")
 
 if __name__ == '__main__':
     unittest.main()
