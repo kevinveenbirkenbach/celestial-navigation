@@ -62,7 +62,7 @@ class TestArcToTime(unittest.TestCase):
 
 class TestTransitTime(unittest.TestCase):
 
-    def test_transit_time_calculation(self):
+    def test_transit_time_east_longitude(self):
         # Test transit time calculation at longitude
         longitude = Longitude("30°00'00\"E")
         arc_to_time = ArcToTime(longitude)

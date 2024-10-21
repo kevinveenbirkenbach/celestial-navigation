@@ -39,11 +39,7 @@ class UTCDatetime(datetime):
 class ArcToTime(timedelta):
     def __new__(cls, longitude: Longitude):
         # Calculate the total minutes corresponding to the longitude
-        minutes = abs(longitude.decimal) * 4
-        
-        # Handle West longitude (subtract time)
-        if "W" in longitude.string:
-            minutes = -minutes
+        minutes = longitude.decimal * 4
         
         # Create the new timedelta object
         return super().__new__(cls, minutes=minutes)
@@ -65,11 +61,11 @@ class ArcToTime(timedelta):
         return ArcToTime.get_arc_to_time_string(self)
 
 class TransitTime(UTCDatetime):
-    def __new__(cls, arc_to_time: timedelta, transit_time_greenwich: UTCDatetime):
+    def __new__(cls, arc_to_time: ArcToTime, transit_time_greenwich: UTCDatetime):
         # Add the time offset for East longitudes (positive arc_to_time)
         # Subtract the time offset for West longitudes (negative arc_to_time)
-        transit_time_at_longitude = transit_time_greenwich + arc_to_time
-        
+        transit_time_at_longitude = transit_time_greenwich - arc_to_time
+
         # Create a new UTCDatetime instance with the calculated time
         return super().__new__(cls, transit_time_at_longitude)
 
