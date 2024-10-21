@@ -36,34 +36,40 @@ class UTCDatetime(datetime):
         # Return the datetime in ISO 8601 format (in UTC)
         return self.isoformat()
 
-
-
 class ArcToTime(timedelta):
     def __new__(cls, longitude: Longitude):
         # Calculate the total minutes corresponding to the longitude
-        minutes = longitude.decimal * 4
+        minutes = abs(longitude.decimal) * 4
         
-        # Create the new timedelta object (using the super call for timedelta)
+        # Handle West longitude (subtract time)
+        if "W" in longitude.string:
+            minutes = -minutes
+        
+        # Create the new timedelta object
         return super().__new__(cls, minutes=minutes)
     
     @staticmethod
     def get_arc_to_time_string(arc_to_time_delta: timedelta):
         """Return arc to time as a string in hh:mm:ss format."""
-        # Converting timedelta to hours, minutes, and seconds
         total_seconds = int(arc_to_time_delta.total_seconds())
-        hours, remainder = divmod(total_seconds, 3600)
+        hours, remainder = divmod(abs(total_seconds), 3600)
         minutes, seconds = divmod(remainder, 60)
-        # Return arc to time in hh:mm:ss format
-        return f"{hours:02}:{minutes:02}:{seconds:02}"
+
+        # Handle negative hours
+        sign = "-" if total_seconds < 0 else ""
+
+        # Return arc to time in hh:mm:ss format with leading zeros
+        return f"{sign}{hours:02}:{minutes:02}:{seconds:02}"
     
     def __str__(self):
-        # Use the custom string representation for timedelta
         return ArcToTime.get_arc_to_time_string(self)
 
 class TransitTime(UTCDatetime):
     def __new__(cls, arc_to_time: timedelta, transit_time_greenwich: UTCDatetime):
-        # Berechne die Transitzeit am Längengrad, indem die ARC-to-Time-Differenz subtrahiert wird
-        transit_time_at_longitude = transit_time_greenwich - arc_to_time
+        # Add the time offset for East longitudes (positive arc_to_time)
+        # Subtract the time offset for West longitudes (negative arc_to_time)
+        transit_time_at_longitude = transit_time_greenwich + arc_to_time
         
-        # Erstelle eine neue UTCDatetime-Instanz mit der berechneten Zeit
+        # Create a new UTCDatetime instance with the calculated time
         return super().__new__(cls, transit_time_at_longitude)
+

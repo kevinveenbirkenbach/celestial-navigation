@@ -1,10 +1,9 @@
 import unittest
-from core.latitude import Latitude
+from core.latitude import Latitude, CalculatedLatitude
 from core.helper import Helper
 from core.degree import Degree
 from core.altitude import AltitudeTrue
 from core.declination import Declination
-from core.latitude import CalculatedLatitude
 
 class TestLatitude(unittest.TestCase):
     def test_latitude_calculation(self):
@@ -14,9 +13,11 @@ class TestLatitude(unittest.TestCase):
         
         # Expected values
         expected_latitude_str = "08°30'00.00\"N"
-        
+
+        # Estimated Latitude
+        estimated_latitude = Latitude ("08°26'00.00\"N")
         # Calculating Latitude
-        calculated_latitude = CalculatedLatitude(true_altitude, declination)
+        calculated_latitude = CalculatedLatitude(true_altitude, declination, estimated_latitude)
         
         # Test that the latitude string matches the expected value
         self.assertEqual(str(calculated_latitude), expected_latitude_str, "Latitude calculation failed for N/S hemisphere")

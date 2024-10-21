@@ -3,7 +3,7 @@ from core.time import UTCDatetime, ArcToTime, TransitTime
 from core.altitude import AltitudeObserved, AltitudeSextant, AltitudeTrue, Altitude
 from core.corrections import CorrectionSum, CorrectionDIP, CorrectionMonthly
 from core.index_error import IndexError
-from core.latitude import CalculatedLatitude
+from core.latitude import CalculatedLatitude, Latitude
 from core.declination import Declination
 from core.longitude import Longitude
 from core.degree import Degree
@@ -63,11 +63,13 @@ def calculate_latitude(true_altitude=False):
         true_altitude = AltitudeTrue(true_altitude_str)
 
     # LATITUDE INPUTS
-    declination_str = input("Enter declination (DEC in D°M'S\" format): ")
+    declination_str = input("Enter declination (DEC in D°M'S\"(N\S) format): ")
     declination = Declination(declination_str)
+    estimated_latitude_str = input("Enter the estimated latitude (DEC in D°M'S\"(N\S) format): ")
+    estimated_latitude = Latitude(estimated_latitude_str)
 
     # Latitude Calculation
-    latitude = CalculatedLatitude(true_altitude, declination)
+    latitude = CalculatedLatitude(true_altitude, declination, estimated_latitude)
     print(f"Zenith Distance (ZD): {latitude.zenith_distance.decimal}")
     print(f"Latitude: {latitude}")
 

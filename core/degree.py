@@ -39,8 +39,16 @@ class Degree:
         degrees = float(match.group('degrees'))
         minutes = float(match.group('minutes')) if match.group('minutes') else 0
         seconds = float(match.group('seconds')) if match.group('seconds') else 0
+        direction = match.group('direction')
         
+        # Calculate the decimal degree
         decimal_degrees = degrees + minutes / 60 + seconds / 3600
+
+        # Adjust the sign based on the direction
+        if direction in ['W', 'S']:
+            decimal_degrees = -abs(decimal_degrees)  # West and South should be negative
+        elif direction in ['E', 'N']:
+            decimal_degrees = abs(decimal_degrees)   # East and North should be positive
         
         return decimal_degrees
     
