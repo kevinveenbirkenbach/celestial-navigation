@@ -1,6 +1,6 @@
 import unittest
 from datetime import datetime, timezone, timedelta
-from core.time import UTCDatetime, ArcToTime, TransitTime
+from core.time import UTCDatetime, ArcToTime, TransitTime, ObservationTime
 from core.longitude import Longitude
 
 
@@ -87,6 +87,46 @@ class TestTransitTime(unittest.TestCase):
         
         self.assertEqual(transit_time_at_longitude, expected_transit_time)
         self.assertEqual(str(transit_time_at_longitude), "2024-06-21 13:00:00+00:00")
+class TestObservationTime(unittest.TestCase):
+
+    def setUp(self):
+        # Set example times for the test
+        self.nautical_twilight = TransitTime(
+            arc_to_time=timedelta(hours=-2, minutes=-51), 
+            transit_time_greenwich=datetime(2024, 6, 21, 2, 0, 0, tzinfo=timezone.utc)
+        )
+        self.civil_twilight = TransitTime(
+            arc_to_time=timedelta(hours=-2, minutes=-51), 
+            transit_time_greenwich=datetime(2024, 6, 21, 3, 6, 0, tzinfo=timezone.utc)
+        )
+        self.sunrise = TransitTime(
+            arc_to_time=timedelta(hours=-2, minutes=-51), 
+            transit_time_greenwich=datetime(2024, 6, 21, 3, 51, 0, tzinfo=timezone.utc)
+        )
+
+        # Example instance of ObservationTime
+        self.observation_time = ObservationTime(
+            nautical_twilight=self.nautical_twilight, 
+            civil_twilight=self.civil_twilight, 
+            sunrise=self.sunrise
+        )
+
+    def test_observation_start_and_end(self):
+        # Expected times for observation start and end
+        expected_observation_start = datetime(2024, 6, 21, 5, 24, 0, tzinfo=timezone.utc)
+        expected_observation_end = datetime(2024, 6, 21, 6, 19, 30, tzinfo=timezone.utc)
+
+        # Check if the calculated times are correct
+        self.assertEqual(self.observation_time.observation_start, expected_observation_start)
+        self.assertEqual(self.observation_time.observation_end, expected_observation_end)
+
+    def test_observation_time_str(self):
+        # Test the __str__ method for correct output
+        expected_output = """
+Observation Start: 2024-06-21 05:24:00+00:00
+Observation End: 2024-06-21 06:19:30+00:00
+        """
+        self.assertEqual(str(self.observation_time).strip(), expected_output.strip())
 
 
 if __name__ == "__main__":

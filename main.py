@@ -1,5 +1,5 @@
 import argparse
-from core.time import UTCDatetime, ArcToTime, TransitTime
+from core.time import UTCDatetime, ArcToTime, TransitTime, ObservationTime
 from core.altitude import AltitudeObserved, AltitudeSextant, AltitudeTrue, Altitude
 from core.corrections import CorrectionSum, CorrectionDIP, CorrectionMonthly
 from core.index_error import IndexError
@@ -8,11 +8,41 @@ from core.declination import Declination
 from core.longitude import Longitude
 from core.degree import Degree
 
+def calculate_observation_time():
+    print("Observation Time Calculation\n")
+    
+    longitude_str = input("Enter longitude (in D°M'S\" format, with direction E/W): ")
+    longitude = Longitude(longitude_str) 
+    
+    arc_to_time = ArcToTime(longitude)
+    print(f"ARC to time: {arc_to_time}")
+
+    nautical_transit_time = TransitTime(
+        arc_to_time,
+        UTCDatetime(input("Enter Nautical Twilight at Greenwich (YYYY-MM-DDTHH:MM:SS format): "))
+    )
+    print(f"Nautical Twilight at Position: {nautical_transit_time}")
+
+    civil_transit_time = TransitTime(
+        arc_to_time,
+        UTCDatetime(input("Enter Civil Twilight at Greenwich (YYYY-MM-DDTHH:MM:SS format): "))
+    )
+    print(f"Civil Twilight at Position: {civil_transit_time}")
+    
+    sunrise_transit_time = TransitTime(
+        arc_to_time,
+        UTCDatetime(input("Enter Sunrise at Greenwich (YYYY-MM-DDTHH:MM:SS format): "))
+    )
+    print(f"Sunrise at Position: {sunrise_transit_time}")
+    
+    observation_time = ObservationTime(nautical_transit_time,civil_transit_time,sunrise_transit_time)
+    print(f"{observation_time}")
+
 def calculate_time():
     print("Time Calculation\n")
     # TIME INPUTS
     longitude_str = input("Enter longitude (in D°M'S\" format, with direction E/W): ")
-    longitude = Longitude(longitude_str)  # Verwende die Longitude Klasse
+    longitude = Longitude(longitude_str) 
     
     arc_to_time = ArcToTime(longitude)
     print(f"ARC to time: {arc_to_time}")
@@ -63,9 +93,9 @@ def calculate_latitude(true_altitude=False):
         true_altitude = AltitudeTrue(true_altitude_str)
 
     # LATITUDE INPUTS
-    declination_str = input("Enter declination (DEC in D°M'S\"(N\S) format): ")
+    declination_str = input("Enter declination (DEC in D°M'S\" format): ")
     declination = Declination(declination_str)
-    estimated_latitude_str = input("Enter the estimated latitude (DEC in D°M'S\"(N\S) format): ")
+    estimated_latitude_str = input("Enter the estimated latitude (DEC in D°M'S\" format): ")
     estimated_latitude = Latitude(estimated_latitude_str)
 
     # Latitude Calculation
@@ -78,14 +108,16 @@ def main():
     parser.add_argument(
         "calculations", 
         nargs="+",  # Allows multiple choices to be passed as a list
-        choices=["time", "altitude", "latitude"], 
+        choices=["time", "altitude", "latitude","observationtime"], 
         help="Choose one or more calculations to perform: 'time', 'altitude', 'latitude'"
     )
 
     args = parser.parse_args()
 
     # Execute the selected calculations
-    if "time" in args.calculations:
+    if "observationtime" in args.calculations:
+        calculate_observation_time()
+    if "transittime" in args.calculations:
         calculate_time()
     if "altitude" in args.calculations:
         true_altitude = calculate_altitude()

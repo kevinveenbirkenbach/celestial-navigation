@@ -68,4 +68,17 @@ class TransitTime(UTCDatetime):
 
         # Create a new UTCDatetime instance with the calculated time
         return super().__new__(cls, transit_time_at_longitude)
-
+class ObservationTime:
+    def __init__(self, nautical_twilight:TransitTime, civil_twilight:TransitTime, sunrise: TransitTime):
+        self.nautical_twilight = nautical_twilight
+        self.civil_twilight = civil_twilight
+        self.sunrise = sunrise
+        self.observation_time_until_civil = (self.civil_twilight - self.nautical_twilight) / 2
+        self.observation_time_until_sunrise = (self.sunrise - self.civil_twilight) / 2        
+        self.observation_start = self.civil_twilight - self.observation_time_until_civil
+        self.observation_end = self.sunrise - self.observation_time_until_sunrise
+    def __str__(self):
+        return (f"""
+Observation Start: {self.observation_start}
+Observation End: {self.observation_end}
+        """)
