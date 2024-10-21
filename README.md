@@ -16,6 +16,12 @@ To run the tests execute:
 python -m unittest discover tests
 ```
 
+### Examples
+#### Observation Time
+```bash
+echo -e "174°30'E\n2024-06-22T02:00:00\n2024-06-22T03:06:00\n2024-06-22T03:51:00" | python main.py observationtime
+```
+
 ## Author
 - Kevin Veen-Birkenbach  
 - 🌐 [Website](https://www.yachtmaster.world)  

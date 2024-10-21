@@ -12,7 +12,7 @@ class Altitude(Degree):
     """
     def __init__(self, value):
         super().__init__(value)
-        if not (0 <= self.decimal <= 90):
+        if not (0 <= self.raw_decimal <= 90):
             raise ValueError(f"Altitude must be between 0° and 90°, but got {value}")
         self.string = Helper.ensure_two_digit_degrees(self.string)
 

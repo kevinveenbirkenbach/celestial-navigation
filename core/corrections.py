@@ -4,21 +4,21 @@ class Correction(Degree):
     """Represents a correction in degrees."""
     def __init__(self, value):
         super().__init__(value)
-        if not (-0.5 <= self.decimal <= 2):
+        if not (-0.5 <= self.raw_decimal <= 2):
             raise ValueError(f"Correction value must be between -0.5° and 2°, but got {value}")
 
 class CorrectionMonthly(Correction):
     """Represents a monthly correction in degrees."""
     def __init__(self, value):
         super().__init__(value)
-        if not (-0.5 <= self.decimal <= 0.5):
+        if not (-0.5 <= self.raw_decimal <= 0.5):
             raise ValueError(f"Monthly correction must be between -0.5° and 0.5°, but got {value}")
 
 class CorrectionDIP(Correction):
     """Represents a monthly correction in degrees."""
     def __init__(self, value):
         super().__init__(value)
-        if not (0 <= self.decimal <= 1.0):
+        if not (0 <= self.raw_decimal <= 1.0):
             raise ValueError(f"DIP correction must be between 0° and 1°, but got {value}")
 
 class CorrectionSum(Correction):

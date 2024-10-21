@@ -8,6 +8,7 @@ class Degree:
             angle = value
         else:
             raise TypeError(f"The value '{value}' is of the wrong type: {type(value).__name__}.")
+        self.raw_decimal = angle #contains the non-normalized angle
         self.decimal = Degree.normalize_angle(angle)
         self.string = Degree.decimal_to_ddmmss(self.decimal)
 

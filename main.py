@@ -7,6 +7,28 @@ from core.latitude import CalculatedLatitude, Latitude
 from core.declination import Declination
 from core.longitude import Longitude
 from core.degree import Degree
+from core.hour_angles import GreenwhichHourAngle, LocaleHourAngle
+from core.time import UTCDatetime
+
+def calculate_star_sight():
+    star_sight_time=UTCDatetime(input("Enter the time for the star sight (YYYY-MM-DDTHH:MM:SS format): "))
+    greenwhich_hour_angle_i = GreenwhichHourAngle(
+        input("Enter the nearest GHA (in D°M'S\" format): "),
+        UTCDatetime(input("Enter the time for the GHA (YYYY-MM-DDTHH:MM:SS format): "))
+        )
+    greenwhich_hour_angle_ii = GreenwhichHourAngle(
+        input("Enter the second nearest GHA (in D°M'S\" format): "),
+        UTCDatetime(input("Enter the time for the GHA (YYYY-MM-DDTHH:MM:SS format): "))
+        )
+    interpolated_gha = GreenwhichHourAngle.new_interpolated_gha(
+        greenwhich_hour_angle_i,
+        greenwhich_hour_angle_ii,
+        star_sight_time
+        )
+    print(f"GHA: {interpolated_gha}")
+    choosen_longitude = Longitude(input("Enter the choosen longitude (in D°M'S\" format): "))
+    locale_hour_angle = LocaleHourAngle(interpolated_gha,choosen_longitude)
+    print(f"LHA: {locale_hour_angle}")
 
 def calculate_observation_time():
     print("Observation Time Calculation\n")
@@ -108,14 +130,15 @@ def main():
     parser.add_argument(
         "calculations", 
         nargs="+",  # Allows multiple choices to be passed as a list
-        choices=["time", "altitude", "latitude","observationtime"], 
+        choices=["time", "altitude", "latitude","observation_time","star_sight"], 
         help="Choose one or more calculations to perform: 'time', 'altitude', 'latitude'"
     )
 
     args = parser.parse_args()
 
-    # Execute the selected calculations
-    if "observationtime" in args.calculations:
+    if "star_sight" in args.calculations:
+        calculate_star_sight()
+    if "observation_time" in args.calculations:
         calculate_observation_time()
     if "transittime" in args.calculations:
         calculate_time()
