@@ -138,41 +138,6 @@ def determine_known_values():
     
     return known_values, values
 
-
-def calculate_missing_values(known_values, values):
-    # Calculate Magnetic Bearing if True Bearing and Variation are known
-    if known_values["true_bearing"] and known_values["variation"] and not known_values["magnetic_bearing"]:
-        values["magnetic_bearing"] = CompassMagneticBearing(CompassTrueBearing(values["true_bearing"]), CompassVariation(values["variation"]))
-        print(f"Calculated Magnetic Bearing: {values['magnetic_bearing']}")
-
-    # Calculate True Bearing if Magnetic Bearing and Variation are known
-    if known_values["magnetic_bearing"] and known_values["variation"] and not known_values["true_bearing"]:
-        values["true_bearing"] = CompassTrueBearing(CompassMagneticBearing(values["magnetic_bearing"]), CompassVariation(values["variation"]))
-        print(f"Calculated True Bearing: {values['true_bearing']}")
-
-    # Calculate Compass Bearing if Magnetic Bearing and Deviation are known
-    if known_values["magnetic_bearing"] and known_values["deviation"] and not known_values["compass_bearing"]:
-        values["compass_bearing"] = CompassBearing(CompassMagneticBearing(values["magnetic_bearing"]), CompassDeviation(values["deviation"]))
-        print(f"Calculated Compass Bearing: {values['compass_bearing']}")
-
-    # Calculate Deviation if Compass Bearing and Magnetic Bearing are known
-    if known_values["compass_bearing"] and known_values["magnetic_bearing"] and not known_values["deviation"]:
-        values["deviation"] = CompassDeviation(CompassMagneticBearing(values["magnetic_bearing"]), CompassBearing(values["compass_bearing"]))
-        print(f"Calculated Compass Deviation: {values['deviation']}")
-
-    # Calculate Variation if True Bearing and Magnetic Bearing are known
-    if known_values["true_bearing"] and known_values["magnetic_bearing"] and not known_values["variation"]:
-        values["variation"] = CompassVariation(CompassTrueBearing(values["true_bearing"]), CompassMagneticBearing(values["magnetic_bearing"]))
-        print(f"Calculated Compass Variation: {values['variation']}")
-
-    # Final output of all values, calculated or known
-    print("\nFinal Compass Values:")
-    print(f"True Bearing: {values.get('true_bearing', 'Unknown')}")
-    print(f"Magnetic Bearing: {values.get('magnetic_bearing', 'Unknown')}")
-    print(f"Compass Bearing: {values.get('compass_bearing', 'Unknown')}")
-    print(f"Compass Variation: {values.get('variation', 'Unknown')}")
-    print(f"Compass Deviation: {values.get('deviation', 'Unknown')}")
-
 def compass_values():
     known_values, values = determine_known_values()
     calculator = CompassCalculator(known_values, values)
