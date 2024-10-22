@@ -51,5 +51,25 @@ class TestDegree(unittest.TestCase):
     def test_degree_no_direction(self):
         degree = Degree(45.1234)  # Generic degree without direction
         self.assertEqual(str(degree), "045°07'24.24\"", "Failed for Degree without direction")
+
+    def test_degree_initialization(self):
+        degree = Degree(45.5)
+        self.assertEqual(degree.decimal, 45.5)
+        self.assertEqual(str(degree), "045°30'00.00\"")
+
+    def test_degree_addition(self):
+        degree1 = Degree(45.5)
+        degree2 = Degree(30.25)
+        result = degree1 + degree2
+        self.assertEqual(result.decimal, 75.75)
+        self.assertEqual(str(result), "075°45'00.00\"")
+
+    def test_degree_subtraction(self):
+        degree1 = Degree(45.5)
+        degree2 = Degree(30.25)
+        result = degree1 - degree2
+        self.assertEqual(result.decimal, 15.25)
+        self.assertEqual(str(result), "015°15'00.00\"")
+
 if __name__ == '__main__':
     unittest.main()
