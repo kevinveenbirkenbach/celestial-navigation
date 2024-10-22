@@ -27,11 +27,13 @@ class TestLongitude(unittest.TestCase):
         """Test the maximum valid positive longitude (180°E)."""
         lon = Longitude(180.0)
         self.assertEqual(str(lon), "180°00'00.00\"E", "Failed for Longitude (Maximum Positive)")
+        self.assertEqual(lon.decimal,180)
 
     def test_longitude_max_negative(self):
         """Test the maximum valid negative longitude (-180°W)."""
         lon = Longitude(-180.0)
         self.assertEqual(str(lon), "180°00'00.00\"W", "Failed for Longitude (Maximum Negative)")
+        self.assertEqual(lon.decimal,-180)
 
     def test_invalid_longitude_positive(self):
         """Test that an invalid longitude greater than 180° raises a ValueError."""

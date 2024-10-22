@@ -1,7 +1,10 @@
 from .degree import Degree
 from .helper import Helper
 class Longitude(Degree):
-    """Represents a Longitude value in degrees."""
+    """
+    Represents a Longitude value in degrees.
+    @see https://en.wikipedia.org/wiki/Longitude
+    """
     def __init__(self, value):
         super().__init__(value)
         if not (Degree(-180) <= self <= Degree(180)):
