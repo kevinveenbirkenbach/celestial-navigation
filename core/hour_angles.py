@@ -3,7 +3,7 @@ from .longitude import Longitude
 from .time import UTCDatetime
 
 class Increment(Degree):
-    pass
+        pass
 
 class HourAngle(Degree):
     """
@@ -25,6 +25,10 @@ class GreenwhichHourAngle(HourAngle):
         self.time = time
     
     @staticmethod
+    def new_incremented_gha(gha:GreenwhichHourAngle, increment: Increment):
+        return gha + increment
+
+    @staticmethod
     def new_interpolated_gha(gha_1,gha_2, star_sight_time: UTCDatetime):
         delta_degree = abs(gha_1 - gha_2)
         delta_time_seconds = abs((gha_1.time - gha_2.time).total_seconds())
@@ -34,8 +38,6 @@ class GreenwhichHourAngle(HourAngle):
         else:
             degree_decimal = gha_1 + ((star_sight_time - gha_1.time).total_seconds()*change_degree_per_seconds)
         return GreenwhichHourAngle(degree_decimal,star_sight_time)
-
-
 
 #class GreenwhichHourAngleAries:
 
