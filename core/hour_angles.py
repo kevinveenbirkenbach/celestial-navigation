@@ -25,7 +25,7 @@ class GreenwhichHourAngle(HourAngle):
         self.time = time
     
     @staticmethod
-    def new_incremented_gha(gha:GreenwhichHourAngle, increment: Increment):
+    def new_incremented_gha(gha, increment: Increment):
         return gha + increment
 
     @staticmethod
