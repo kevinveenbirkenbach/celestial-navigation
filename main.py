@@ -7,6 +7,8 @@ from core.declination import Declination
 from core.longitude import Longitude
 from core.degree import Degree
 from core.hour_angles import GreenwhichHourAngle, LocaleHourAngle
+from core.compass_calculator import CompassCalculator
+
 
 def calculate_star_sight():
     star_sight_time = UTCDatetime(input("Enter the time for the star sight (YYYY-MM-DDTHH:MM:SS format): "))
@@ -116,6 +118,66 @@ def calculate_latitude(true_altitude=None):
     print(f"Zenith Distance (ZD): {latitude.zenith_distance}")
     print(f"Latitude: {latitude}")
 
+def determine_known_values():
+    print("Enter the known compass values (leave blank if unknown):")
+    values = {
+        "true_bearing": input("Enter the True Bearing (in degrees) or press Enter to skip: ").strip(),
+        "magnetic_bearing": input("Enter the Magnetic Bearing (in degrees) or press Enter to skip: ").strip(),
+        "compass_bearing": input("Enter the Compass Bearing (in degrees) or press Enter to skip: ").strip(),
+        "variation": input("Enter the Compass Variation (in degrees) or press Enter to skip: ").strip(),
+        "deviation": input("Enter the Compass Deviation (in degrees) or press Enter to skip: ").strip(),
+    }
+
+    # Mark known values
+    known_values = {key: bool(value) for key, value in values.items()}
+
+    # Convert entered values to floats if provided
+    for key, value in values.items():
+        if value:
+            values[key] = value
+    
+    return known_values, values
+
+
+def calculate_missing_values(known_values, values):
+    # Calculate Magnetic Bearing if True Bearing and Variation are known
+    if known_values["true_bearing"] and known_values["variation"] and not known_values["magnetic_bearing"]:
+        values["magnetic_bearing"] = CompassMagneticBearing(CompassTrueBearing(values["true_bearing"]), CompassVariation(values["variation"]))
+        print(f"Calculated Magnetic Bearing: {values['magnetic_bearing']}")
+
+    # Calculate True Bearing if Magnetic Bearing and Variation are known
+    if known_values["magnetic_bearing"] and known_values["variation"] and not known_values["true_bearing"]:
+        values["true_bearing"] = CompassTrueBearing(CompassMagneticBearing(values["magnetic_bearing"]), CompassVariation(values["variation"]))
+        print(f"Calculated True Bearing: {values['true_bearing']}")
+
+    # Calculate Compass Bearing if Magnetic Bearing and Deviation are known
+    if known_values["magnetic_bearing"] and known_values["deviation"] and not known_values["compass_bearing"]:
+        values["compass_bearing"] = CompassBearing(CompassMagneticBearing(values["magnetic_bearing"]), CompassDeviation(values["deviation"]))
+        print(f"Calculated Compass Bearing: {values['compass_bearing']}")
+
+    # Calculate Deviation if Compass Bearing and Magnetic Bearing are known
+    if known_values["compass_bearing"] and known_values["magnetic_bearing"] and not known_values["deviation"]:
+        values["deviation"] = CompassDeviation(CompassMagneticBearing(values["magnetic_bearing"]), CompassBearing(values["compass_bearing"]))
+        print(f"Calculated Compass Deviation: {values['deviation']}")
+
+    # Calculate Variation if True Bearing and Magnetic Bearing are known
+    if known_values["true_bearing"] and known_values["magnetic_bearing"] and not known_values["variation"]:
+        values["variation"] = CompassVariation(CompassTrueBearing(values["true_bearing"]), CompassMagneticBearing(values["magnetic_bearing"]))
+        print(f"Calculated Compass Variation: {values['variation']}")
+
+    # Final output of all values, calculated or known
+    print("\nFinal Compass Values:")
+    print(f"True Bearing: {values.get('true_bearing', 'Unknown')}")
+    print(f"Magnetic Bearing: {values.get('magnetic_bearing', 'Unknown')}")
+    print(f"Compass Bearing: {values.get('compass_bearing', 'Unknown')}")
+    print(f"Compass Variation: {values.get('variation', 'Unknown')}")
+    print(f"Compass Deviation: {values.get('deviation', 'Unknown')}")
+
+def compass_values():
+    known_values, values = determine_known_values()
+    calculator = CompassCalculator(known_values, values)
+    calculator.calculate_all()
+
 def main():
     print("Choose the calculation(s) to perform:")
     options = {
@@ -123,7 +185,8 @@ def main():
         "2": "Observation Time",
         "3": "Time",
         "4": "Altitude",
-        "5": "Latitude"
+        "5": "Latitude",
+        "6": "Compass Values"
     }
     
     for key, value in options.items():
@@ -145,6 +208,8 @@ def main():
             true_altitude = calculate_altitude()
         elif option == "5":
             calculate_latitude(true_altitude)
+        elif option == "6":
+            compass_values()
 
 if __name__ == "__main__":
     main()

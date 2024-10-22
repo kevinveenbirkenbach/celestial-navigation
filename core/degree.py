@@ -4,6 +4,8 @@ class Degree:
     def __init__(self, value):
         if isinstance(value, Degree):
             angle = value.decimal
+        elif Degree.is_number(value):
+            angle = float(value)
         elif isinstance(value, str):
             angle = Degree.ddmmss_to_decimal(value)
         elif isinstance(value, int) or isinstance(value, float):
@@ -13,6 +15,14 @@ class Degree:
         self.raw_decimal = angle #contains the non-normalized angle
         self.decimal = Degree.normalize_angle(angle)
         self.string = Degree.decimal_to_ddmmss(self.decimal)
+
+    @staticmethod
+    def is_number(value):
+        try:
+            float(value)
+            return True
+        except ValueError:
+            return False
 
     @staticmethod
     def normalize_angle(angle):

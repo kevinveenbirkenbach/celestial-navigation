@@ -3,6 +3,18 @@ from core.degree import Degree
 
 class TestDegree(unittest.TestCase):
 
+    def test_string_float(self):
+        degree = Degree("270.123")
+        self.assertEqual(degree.decimal, 270.123, "Failed to handle string with float")
+
+    def test_string_negative_float(self):
+        degree = Degree("-270.123")
+        self.assertEqual(degree.decimal, -270.123, "Failed to handle string with float")
+
+    def test_string_int(self):
+        degree = Degree("271")
+        self.assertEqual(degree.decimal, 271, "Failed to handle string with float")
+
     def test_normalize_angle_below_360(self):
         # Test when the angle is already less than 360
         degree = Degree(270)
