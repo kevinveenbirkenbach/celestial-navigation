@@ -2,7 +2,9 @@ import re
 
 class Degree:
     def __init__(self, value):
-        if isinstance(value, str):
+        if isinstance(value, Degree):
+            angle = value.decimal
+        elif isinstance(value, str):
             angle = Degree.ddmmss_to_decimal(value)
         elif isinstance(value, int) or isinstance(value, float):
             angle = value
@@ -80,5 +82,73 @@ class Degree:
         # Format into D°M'S" format (without direction)
         return f"{degrees:03d}°{minutes:02d}'{seconds:05.2f}\""
     
+    def __add__(self, other):
+        if not isinstance(other, Degree):
+            return NotImplemented
+        result_angle = self.decimal + other.decimal
+        return Degree(result_angle)
+
+    def __sub__(self, other):
+        if not isinstance(other, Degree):
+            return NotImplemented
+        result_angle = self.decimal - other.decimal
+        return Degree(result_angle)
+    
     def __str__(self):
         return self.string
+
+    def __lt__(self, other):
+        """Compares if self is less than other."""
+        if not isinstance(other, Degree):
+            return NotImplemented
+        return self.decimal < other.decimal
+
+    def __le__(self, other):
+        """Compares if self is less than or equal to other."""
+        if not isinstance(other, Degree):
+            return NotImplemented
+        return self.decimal <= other.decimal
+
+    def __gt__(self, other):
+        """Compares if self is greater than other."""
+        if not isinstance(other, Degree):
+            return NotImplemented
+        return self.decimal > other.decimal
+
+    def __ge__(self, other):
+        """Compares if self is greater than or equal to other."""
+        if not isinstance(other, Degree):
+            return NotImplemented
+        return self.decimal >= other.decimal
+
+    def __eq__(self, other):
+        """Compares if self is equal to other."""
+        if not isinstance(other, Degree):
+            return NotImplemented
+        return self.decimal == other.decimal
+
+    def __ne__(self, other):
+        """Compares if self is not equal to other."""
+        if not isinstance(other, Degree):
+            return NotImplemented
+        return self.decimal != other.decimal
+
+    def __mul__(self, other):
+        """Multiply a Degree object by a scalar (int or float)."""
+        if not isinstance(other, (int, float)):
+            return NotImplemented
+        result_angle = self.raw_decimal * other
+        return Degree(result_angle)
+
+    def __rmul__(self, other):
+        """Handles multiplication when the scalar is on the left side (e.g., scalar * Degree)."""
+        return self.__mul__(other)  # Reverse multiplication behaves the same as normal multiplication
+
+    def __truediv__(self, other):
+        """Divide a Degree object by a scalar (int or float)."""
+        if not isinstance(other, (int, float)):
+            return NotImplemented
+        if other == 0:
+            raise ZeroDivisionError("Division by zero is not allowed.")
+        result_angle = self.raw_decimal / other
+        return Degree(result_angle)

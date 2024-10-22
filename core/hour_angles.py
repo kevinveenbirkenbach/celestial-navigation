@@ -26,13 +26,13 @@ class GreenwhichHourAngle(HourAngle):
     
     @staticmethod
     def new_interpolated_gha(gha_1,gha_2, star_sight_time: UTCDatetime):
-        delta_degree = abs(gha_1.decimal - gha_2.decimal)
+        delta_degree = abs(gha_1 - gha_2)
         delta_time_seconds = abs((gha_1.time - gha_2.time).total_seconds())
         change_degree_per_seconds = delta_degree / delta_time_seconds
         if gha_1.time >= star_sight_time:
-            degree_decimal = gha_1.decimal - ((gha_1.time - star_sight_time).total_seconds()*change_degree_per_seconds)
+            degree_decimal = gha_1 - ((gha_1.time - star_sight_time).total_seconds()*change_degree_per_seconds)
         else:
-            degree_decimal = gha_1.decimal + ((star_sight_time - gha_1.time).total_seconds()*change_degree_per_seconds)
+            degree_decimal = gha_1 + ((star_sight_time - gha_1.time).total_seconds()*change_degree_per_seconds)
         return GreenwhichHourAngle(degree_decimal,star_sight_time)
 
 
@@ -41,7 +41,7 @@ class GreenwhichHourAngle(HourAngle):
 
 class LocaleHourAngle(HourAngle):
     def __init__(self, greenwhich_hour_angle: GreenwhichHourAngle, longitude: Longitude):
-        locale_hour_angel = greenwhich_hour_angle.decimal + longitude.decimal
+        locale_hour_angel = greenwhich_hour_angle + longitude
         super().__init__(locale_hour_angel)
 
 class SiderealhourAngle:

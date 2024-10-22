@@ -7,7 +7,7 @@ from .zenith_distance import ZenithDistance
 class Latitude(Degree):
     def __init__(self, value):
         super().__init__(value)
-        if not (-90 <= self.decimal <= 90):
+        if not (Degree(-90) <= self <= Degree(90)):
             raise ValueError(f"Latitude must be between -90° and 90°, but got {value}")
         self.string = Helper.ensure_two_digit_degrees(Latitude.decimal_to_ddmmss(self.decimal))
 
@@ -28,16 +28,16 @@ class CalculatedLatitude(Latitude):
         super().__init__(self.calculate_latitude())
 
     def are_declination_and_latitude_in_same_hemisphere(self) -> bool:
-        return self.declination.decimal >= 0 and self.estimated_latitude.decimal >= 0 or self.declination.decimal <= 0 and self.estimated_latitude.decimal <= 0
+        return self.declination >= Degree(0) and self.estimated_latitude >= Degree(0) or self.declination <= Degree(0) and self.estimated_latitude <= Degree(0)
     
     def calculate_latitude(self):
         if self.are_declination_and_latitude_in_same_hemisphere():
-            if self.estimated_latitude.decimal > self.declination.decimal:
-                return self.zenith_distance.decimal + self.declination.decimal
+            if self.estimated_latitude > self.declination:
+                return self.zenith_distance + self.declination
             else:
-                return self.declination.decimal - self.zenith_distance.decimal
+                return self.declination - self.zenith_distance
         else:
-            return self.zenith_distance.decimal + self.declination.decimal
+            return self.zenith_distance + self.declination
             
 
 

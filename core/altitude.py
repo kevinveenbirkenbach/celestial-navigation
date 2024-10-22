@@ -23,7 +23,7 @@ class AltitudeSextant(Altitude):
         
 class AltitudeObserved(Altitude):
     def __init__(self, altitude_sextant: AltitudeSextant, index_error: IndexError):
-        super().__init__(altitude_sextant.decimal + index_error.decimal)
+        super().__init__(altitude_sextant + index_error)
     def __str__(self):
         return f"Observed Altitude (OA): {self.string}"
 
@@ -34,9 +34,9 @@ class AltitudeTrue(Altitude):
             altitude_true_decimal = args[0]
         elif len(args) == 2:
             """TRUE ALTITUDE CALCULATED"""
-            altitude_sextant_decimal = args[0].decimal
-            correction_sum_decimal= args[1].decimal
-            altitude_true_decimal = altitude_sextant_decimal + correction_sum_decimal
+            altitude_sextant = args[0]
+            correction_sum= args[1]
+            altitude_true_decimal = altitude_sextant + correction_sum
         else:
             raise TypeError(f"Expected 1 or 2 arguments, but got {len(args)}")
         super().__init__(altitude_true_decimal)

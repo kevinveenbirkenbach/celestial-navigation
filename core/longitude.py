@@ -4,7 +4,7 @@ class Longitude(Degree):
     """Represents a Longitude value in degrees."""
     def __init__(self, value):
         super().__init__(value)
-        if not (-180 <= self.decimal <= 180):
+        if not (Degree(-180) <= self <= Degree(180)):
             raise ValueError(f"Longitude must be between -180° and 180°, but got {value}")
         self.string = Longitude.decimal_to_ddmmss(self.decimal)
 

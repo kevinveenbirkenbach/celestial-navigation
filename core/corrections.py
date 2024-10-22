@@ -24,6 +24,6 @@ class CorrectionDIP(Correction):
 class CorrectionSum(Correction):
     """Represents the sum of all corrections in degrees."""
     def __init__(self, correction_monthly:CorrectionMonthly, correction_dip:CorrectionDIP):
-        super().__init__(correction_monthly.decimal + correction_dip.decimal)
+        super().__init__(correction_monthly + correction_dip)
     def __str__(self):
         return f"Correction Sum: {self.string}"

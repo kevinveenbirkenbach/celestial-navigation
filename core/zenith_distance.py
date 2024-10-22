@@ -17,7 +17,7 @@ class ZenithDistance(Degree):
     def __init__(self, altitude_true: AltitudeTrue):
         # Calculate the zenith distance by subtracting the true altitude from 90°.
         # The altitude_true.decimal gives the altitude in decimal degrees.
-        zenith_distance = 90 - altitude_true.decimal
+        zenith_distance = Degree(90) - altitude_true
         
         # Pass the calculated zenith distance to the parent class (Degree) constructor.
         super().__init__(zenith_distance)

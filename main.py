@@ -122,7 +122,7 @@ def calculate_latitude(true_altitude=False):
 
     # Latitude Calculation
     latitude = CalculatedLatitude(true_altitude, declination, estimated_latitude)
-    print(f"Zenith Distance (ZD): {latitude.zenith_distance.decimal}")
+    print(f"Zenith Distance (ZD): {latitude.zenith_distance}")
     print(f"Latitude: {latitude}")
 
 def main():
