@@ -1,9 +1,9 @@
 import unittest
-from core.coordinate import Latitude, CalculatedLatitude
+from core.coordinates_geographic import Latitude, CalculatedLatitude
 from core.helper import Helper
 from core.degree import Degree
 from core.altitude import AltitudeTrue
-from core.declination import Declination
+from core.coordinates_celestial import Declination
 
 class TestLatitude(unittest.TestCase):
     def test_latitude_calculation(self):

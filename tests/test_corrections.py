@@ -6,7 +6,7 @@ class TestMonthlyCorrections(unittest.TestCase):
         # Test for a valid negative monthly correction
         correction_monthly = AltitudeCorrectionMonthly(-0.2)
         self.assertEqual(correction_monthly.decimal, -0.2, "Failed to set correct negative monthly correction value")
-        self.assertEqual(str(correction_monthly), "000°12'00.00\"", "String representation is incorrect for negative value")
+        self.assertEqual(str(correction_monthly), "-000°12'00.00\"", "String representation is incorrect for negative value")
 
     def test_invalid_monthly_correction_out_of_bounds(self):
         # Test for an invalid monthly correction (out of bounds, too negative)

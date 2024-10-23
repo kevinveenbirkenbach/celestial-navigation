@@ -1,5 +1,5 @@
 from .degree import Degree
-from .coordinate import Longitude
+from .coordinates_geographic import Longitude
 from .time import UTCDatetime
 
 class Increment(Degree):

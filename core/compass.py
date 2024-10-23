@@ -1,5 +1,5 @@
 from .degree import Degree
-from .coordinate import Longitude
+from .coordinates_geographic import Longitude
 
 # Created with the help of CHAT GPT @see https://chatgpt.com/share/6717189c-905c-800f-8146-1a25ea76428c
 class Compass(Degree):
@@ -30,7 +30,7 @@ class CompassVariation(Compass,Longitude):
     def __init__(self, *args):
         super().__init__(CompassTrueBearing,CompassMagneticBearing,False, *args)
 
-class CompassDeviation(Compass):
+class CompassDeviation(Compass,Longitude):
     """DE: Ablenkung
     Formula:
     Magnetic Bearing - Compass Bearing = Compass Deviation

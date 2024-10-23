@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime, timezone, timedelta
 from core.time import UTCDatetime, ArcToTime, TransitTime, ObservationTime
-from core.coordinate import Longitude
+from core.coordinates_geographic import Longitude
 
 
 class TestUTCDatetime(unittest.TestCase):

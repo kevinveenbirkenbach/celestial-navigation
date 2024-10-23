@@ -1,11 +1,9 @@
 from datetime import timedelta, datetime, timezone
 from .helper import Helper
-from .coordinate import Longitude
+from .coordinates_geographic import Longitude
 from .degree import Degree
-
 from datetime import datetime, timezone
 
-from datetime import datetime, timezone
 
 class UTCDatetime(datetime):
     def __new__(cls, input_datetime):

@@ -1,5 +1,5 @@
 import unittest
-from core.coordinate import Longitude
+from core.coordinates_geographic import Longitude
 
 class TestLongitude(unittest.TestCase):
 

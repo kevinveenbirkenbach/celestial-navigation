@@ -41,17 +41,29 @@ class Degree:
             angle += 360
         return angle
 
-    def ddmmss_to_decimal(self,input_str):
+    def ddmmss_to_decimal(self, input_str):
         """Parse a string in the format of degrees, minutes, and seconds to decimal degrees."""
-        dms_pattern = re.compile(r"(?P<degrees>-?\d+\.?\d*)°(?P<minutes>\d*\.?\d*)'(?P<seconds>\d*\.?\d*)\"?(?P<direction>[EWNS])?")
+        # Check if there are any letters in the string
+        if any(char.isalpha() for char in input_str):
+            raise ValueError(f"Invalid format. The input '{input_str}' contains letters, which are not allowed.")
+
+        # Regular expression to match the D°M'S" format
+        dms_pattern = re.compile(r"(?P<degrees>-?\d+\.?\d*)°(?P<minutes>\d*\.?\d*)'(?P<seconds>\d*\.?\d*)\"?")
         match = dms_pattern.match(input_str)
-        if not match:
-            raise ValueError(f"Invalid format. Use D°M'S\" format instead of {input_str}.")
         
+        # Raise an error if the format does not match
+        if not match:
+            raise ValueError(f"Invalid format. Use D°M'S\" format instead of '{input_str}'.")
+
         degrees = float(match.group('degrees'))
         minutes = float(match.group('minutes')) if match.group('minutes') else 0
         seconds = float(match.group('seconds')) if match.group('seconds') else 0
-        direction = match.group('direction')
+
+        # Validate that minutes and seconds are within their valid ranges
+        if not (0 <= minutes < 60):
+            raise ValueError(f"Invalid minutes value '{minutes}' in '{input_str}'. Minutes must be between 0 and 59.")
+        if not (0 <= seconds < 60):
+            raise ValueError(f"Invalid seconds value '{seconds}' in '{input_str}'. Seconds must be between 0 and 59.")
         
         # If the degrees are negative, apply the negative sign to minutes and seconds as well
         if degrees < 0:
@@ -60,15 +72,9 @@ class Degree:
 
         # Calculate the decimal degree
         decimal_degrees = degrees + minutes / 60 + seconds / 3600
-
-        # Adjust the sign based on the direction, if provided (N, S, E, W)
-        if direction in ['W', 'S']:
-            decimal_degrees = -abs(decimal_degrees)  # West and South should be negative
-        elif direction in ['E', 'N']:
-            decimal_degrees = abs(decimal_degrees)   # East and North should be positive
         
         return decimal_degrees
-    
+
     def decimal_to_ddmmss(self) -> str:
         """
         Convert a decimal degree value to a D°M'S" string format without the direction.
