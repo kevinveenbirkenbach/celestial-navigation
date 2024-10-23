@@ -1,25 +1,11 @@
 from .degree import Degree
 from .coordinates_geographic import Longitude
+from .helper import Helper
 
 # Created with the help of CHAT GPT @see https://chatgpt.com/share/6717189c-905c-800f-8146-1a25ea76428c
 class Compass(Degree):
     def __init__(self, opperant_one_instance: str, opperant_two_instance: str, addition:bool, *args):
-        if len(args) == 2:
-            opperant_one = args[0]
-            opperant_two = args[1]
-            if not (isinstance(opperant_one, opperant_one_instance) and isinstance(opperant_two, opperant_two_instance) ):
-                raise TypeError(f"Wrong parameters passed. Expected {opperant_one_instance} and {opperant_two_instance}. Got {args}.")
-            if addition:
-                degree = opperant_one + opperant_two
-                pass
-            else:
-                degree = opperant_one - opperant_two
-                pass
-        elif len(args) == 1:
-            degree = args[0]
-        else:
-            raise TypeError(f"Expected 1 or 2 arguments, but got {len(args)}.")
-        super().__init__(degree)
+        super().__init__(Helper.delta(opperant_one_instance, opperant_two_instance, addition, *args))
 class CompassVariation(Compass,Longitude):
     """DE: Missweisung
     Formula: 

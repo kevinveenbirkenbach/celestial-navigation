@@ -43,6 +43,10 @@ class Degree:
 
     def ddmmss_to_decimal(self, input_str):
         """Parse a string in the format of degrees, minutes, and seconds to decimal degrees."""
+
+        # Remove + sign if it exists
+        input_str = input_str.lstrip('+')
+
         # Check if there are any letters in the string
         if any(char.isalpha() for char in input_str):
             raise ValueError(f"Invalid format. The input '{input_str}' contains letters, which are not allowed.")

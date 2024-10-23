@@ -1,6 +1,6 @@
 from .degree import Degree
 from .index_error import IndexError
-from .corrections import AltitudeCorrection
+from .corrections import ObservedAltitudeCorrection, ApparentAltitudeCorrection
 from .helper import Helper
 
 class Altitude(Degree):
@@ -17,26 +17,16 @@ class Altitude(Degree):
         self.string = Helper.ensure_two_digit_degrees(self.string)
 
 class AltitudeSextant(Altitude):
-    """Represents an Sextant Altitude value in degrees."""
-    def __str__(self):
-        return f"Sextant Altitude (SA): {self.string}"
+    pass
         
 class AltitudeObserved(Altitude):
     def __init__(self, altitude_sextant: AltitudeSextant, index_error: IndexError):
-        super().__init__(altitude_sextant.decimal + index_error.decimal)
+        super().__init__(altitude_sextant + index_error)
+
+class AltitudeApperant(Altitude):
+    def __init__(self, *args):
+        super().__init__(Helper.delta(AltitudeObserved,ObservedAltitudeCorrection, True, *args))
 
 class AltitudeTrue(Altitude):
     def __init__(self, *args):
-        if len(args) == 1:
-            """TRUE ALTITUDE GIVEN"""
-            altitude_true_decimal = args[0]
-        elif len(args) == 2:
-            """TRUE ALTITUDE CALCULATED"""
-            altitude_sextant = args[0]
-            correction_sum= args[1]
-            altitude_true_decimal = altitude_sextant + correction_sum
-        else:
-            raise TypeError(f"Expected 1 or 2 arguments, but got {len(args)}")
-        super().__init__(altitude_true_decimal)
-    def __str__(self):
-        return f"True Altitude (TA): {self.string}"
+        super().__init__(Helper.delta(AltitudeApperant,ApparentAltitudeCorrection, True, *args))

@@ -1,7 +1,7 @@
 import unittest
-from core.corrections import AltitudeCorrectionDIP, AltitudeCorrectionMonthly, AltitudeCorrection
+from core.corrections import ObservedAltitudeCorrectionDIP, ObservedAltitudeCorrectionMonthly, ObservedAltitudeCorrection, ApparentAltitudeCorrection
 from core.index_error import IndexError
-from core.altitude import Altitude, AltitudeSextant, AltitudeObserved, AltitudeTrue
+from core.altitude import Altitude, AltitudeSextant, AltitudeObserved, AltitudeTrue, AltitudeApperant
 from core.degree import Degree
 
 class TestAltitudeObserved(unittest.TestCase):
@@ -59,27 +59,13 @@ class TestAltitude(unittest.TestCase):
     def test_sextant_altitude(self):
         # Test Sextant Altitude, which is inherited from Altitude
         altitude_sextant = AltitudeSextant(30)
-        self.assertEqual(str(altitude_sextant), "Sextant Altitude (SA): 30°00'00.00\"", "Failed for Sextant Altitude.")
+        self.assertEqual(str(altitude_sextant), "30°00'00.00\"", "Failed for Sextant Altitude.")
 
     def test_true_altitude_given(self):
         # Test True Altitude when given directly
         altitude_true = AltitudeTrue(60)
         self.assertEqual(altitude_true.decimal, 60)
-        self.assertEqual(str(altitude_true), "True Altitude (TA): 60°00'00.00\"", "Failed for direct True Altitude.")
-
-    def test_true_altitude_calculated(self):
-        # Instantiate AltitudeCorrectionMonthly and AltitudeCorrectionDIP objects with appropriate values
-        correction_monthly = AltitudeCorrectionMonthly(0.5) # Example monthly correction
-        correction_dip = AltitudeCorrectionDIP(0.3)         # Example DIP correction
-
-        # Pass these to AltitudeCorrection
-        correction_sum = AltitudeCorrection(correction_monthly, correction_dip)  # Total correction sum is 2.8
-
-        # Calculate true altitude based on sextant altitude and corrections
-        sextant_altitude = AltitudeSextant(77.0)  # Example sextant altitude
-        true_altitude = AltitudeTrue(sextant_altitude, correction_sum)
-        self.assertEqual(true_altitude.decimal, 77.8, "Failed for true altitude calculation")
-        self.assertEqual(str(true_altitude.string), "77°48'00.00\"", "Failed for true altitude calculation")
+        self.assertEqual(str(altitude_true), "60°00'00.00\"", "Failed for direct True Altitude.")
 
     def test_true_altitude_invalid_args(self):
         # Test for invalid number of arguments for True Altitude, should raise TypeError
@@ -92,24 +78,30 @@ class TestAltitudeCalculation(unittest.TestCase):
         # Input values
         sextant_altitude = AltitudeSextant("77°00'")
         index_error = IndexError("00°00'")
-        dip_correction = AltitudeCorrectionDIP("00°12.7'")
-        monthly_correction = AltitudeCorrectionMonthly("00°00.1'")
+        dip_correction = ObservedAltitudeCorrectionDIP("00°12.7'")
+        monthly_correction = ObservedAltitudeCorrectionMonthly("00°00.1'")
+        apparant_altitude_correction = ApparentAltitudeCorrection("00°16'")
 
         # Expected values
         expected_observed_altitude = "77°00'00.00\""
         expected_correction_sum = "000°12'48.00\""
-        expected_true_altitude = "True Altitude (TA): 77°12'48.00\""
+        expected_apparant_altitude = "77°12'48.00\""
+        expected_true_altitude = "77°28'48.00\""
 
         # Calculating the observed altitude (OA)
         observed_altitude = AltitudeObserved(sextant_altitude, index_error)
         self.assertEqual(str(observed_altitude), expected_observed_altitude, "Error in calculating observed altitude (Observed Altitude)")
 
         # Corrections (DIP + Monthly)
-        correction_sum = AltitudeCorrection(monthly_correction, dip_correction)
+        correction_sum = ObservedAltitudeCorrection(monthly_correction, dip_correction)
         self.assertEqual(str(correction_sum), expected_correction_sum, "Error in calculating the total correction (Correction Sum)")
 
+        # Calculating the Apparant Altitute
+        apparant_altitude = AltitudeApperant(observed_altitude,correction_sum)
+        self.assertEqual(str(apparant_altitude), expected_apparant_altitude, "Error in calculating true altitude (True Altitude)")
+
         # Calculating the true altitude (TA)
-        true_altitude = AltitudeTrue(sextant_altitude, correction_sum)
+        true_altitude = AltitudeTrue(apparant_altitude, apparant_altitude_correction)
         self.assertEqual(str(true_altitude), expected_true_altitude, "Error in calculating true altitude (True Altitude)")
 
 if __name__ == '__main__':

@@ -3,6 +3,25 @@ from datetime import timedelta
 
 class Helper:
     @staticmethod
+    def delta(opperant_one_instance: str, opperant_two_instance: str, addition:bool, *args):
+        if len(args) == 2:
+            opperant_one = args[0]
+            opperant_two = args[1]
+            if not (isinstance(opperant_one, opperant_one_instance) and isinstance(opperant_two, opperant_two_instance) ):
+                raise TypeError(f"Wrong parameters passed. Expected {opperant_one_instance} and {opperant_two_instance}. Got {args}.")
+            if addition:
+                delta = opperant_one + opperant_two
+                pass
+            else:
+                delta = opperant_one - opperant_two
+                pass
+        elif len(args) == 1:
+            delta = args[0]
+        else:
+            raise TypeError(f"Expected 1 or 2 arguments, but got {len(args)}.")
+        return delta
+
+    @staticmethod
     def parse_ddmmss(input_str):
         """Parse a string in the format of degrees, minutes, and seconds to decimal degrees."""
         dms_pattern = re.compile(r"(?P<degrees>-?\d+\.?\d*)°(?P<minutes>\d*\.?\d*)'(?P<seconds>\d*\.?\d*)\"?(?P<direction>[EWNS])?")
