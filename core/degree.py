@@ -7,7 +7,7 @@ class Degree:
         elif Degree.is_number(value):
             angle = float(value)
         elif isinstance(value, str):
-            angle = Degree.ddmmss_to_decimal(value)
+            angle = self.ddmmss_to_decimal(value)
         elif isinstance(value, int) or isinstance(value, float):
             angle = value
         else:
@@ -41,8 +41,7 @@ class Degree:
             angle += 360
         return angle
 
-    @staticmethod
-    def ddmmss_to_decimal(input_str):
+    def ddmmss_to_decimal(self,input_str):
         """Parse a string in the format of degrees, minutes, and seconds to decimal degrees."""
         dms_pattern = re.compile(r"(?P<degrees>-?\d+\.?\d*)°(?P<minutes>\d*\.?\d*)'(?P<seconds>\d*\.?\d*)\"?(?P<direction>[EWNS])?")
         match = dms_pattern.match(input_str)

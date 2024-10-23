@@ -1,6 +1,6 @@
 from datetime import timedelta, datetime, timezone
 from .helper import Helper
-from .longitude import Longitude
+from .coordinate import Longitude
 from .degree import Degree
 
 from datetime import datetime, timezone

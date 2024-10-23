@@ -22,6 +22,17 @@ class TestLatitude(unittest.TestCase):
         # Test that the latitude string matches the expected value
         self.assertEqual(str(calculated_latitude), expected_latitude_str, "Latitude calculation failed for N/S hemisphere")
 
+    def test_negative_with_direction(self):
+        degree = Latitude("37°49.3'S")
+        self.assertAlmostEqual(degree.decimal, -37.82166667, places=6, msg="Negative degree with direction (South) conversion failed")
+        self.assertEqual(str(degree), "37°49'18.00\"S", "Negative degree with direction (South) string format failed")
+    
+    def test_positive_with_direction(self):
+        degree = Latitude("37°49.3'N")
+        self.assertAlmostEqual(degree.decimal, 37.82166667, places=6, msg="Positive degree with direction (North) conversion failed")
+        self.assertEqual(str(degree), "37°49'18.00\"N", "Positive degree with direction (North) string format failed")
+    
+
     def test_latitude_north(self):
         lat = Latitude(51.5074)  # Latitude of London
         self.assertEqual(str(lat), "51°30'26.64\"N", "Failed for Latitude (North)")

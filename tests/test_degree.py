@@ -3,6 +3,18 @@ from core.degree import Degree
 
 class TestDegree(unittest.TestCase):
 
+    def test_invalid_direction(self):
+        invalid_inputs = [
+            "37°49.3'S",  # South
+            "37°49.3'E",  # East
+            "37°49.3'W",  # West
+            "37°49.3'N"   # North
+        ]
+        
+        for input_str in invalid_inputs:
+            with self.assertRaises(ValueError, msg=f"ValueError not raised for {input_str}"):
+                Degree(input_str)
+
     def test_string_float(self):
         degree = Degree("270.123")
         self.assertEqual(degree.decimal, 270.123, "Failed to handle string with float")
@@ -93,16 +105,7 @@ class TestDegree(unittest.TestCase):
         self.assertAlmostEqual(degree.decimal, -37.82166667, places=6, msg="Negative degree conversion failed")
         self.assertEqual(str(degree), "-037°49'18.00\"", "Negative degree string format failed")
     
-    def test_negative_with_direction(self):
-        degree = Degree("37°49.3'S")
-        self.assertAlmostEqual(degree.decimal, -37.82166667, places=6, msg="Negative degree with direction (South) conversion failed")
-        self.assertEqual(str(degree), "037°49'18.00\"", "Negative degree with direction (South) string format failed")
-    
-    def test_positive_with_direction(self):
-        degree = Degree("37°49.3'N")
-        self.assertAlmostEqual(degree.decimal, 37.82166667, places=6, msg="Positive degree with direction (North) conversion failed")
-        self.assertEqual(str(degree), "037°49'18.00\"", "Positive degree with direction (North) string format failed")
-    
+##
     def test_zero_degree(self):
         degree = Degree("00°00.0'")
         self.assertAlmostEqual(degree.decimal, 0.0, places=6, msg="Zero degree conversion failed")

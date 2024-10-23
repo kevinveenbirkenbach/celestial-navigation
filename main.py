@@ -2,9 +2,8 @@ from core.time import UTCDatetime, ArcToTime, TransitTime, ObservationTime
 from core.altitude import AltitudeObserved, AltitudeSextant, AltitudeTrue, Altitude
 from core.corrections import AltitudeCorrection, AltitudeCorrectionDIP, AltitudeCorrectionMonthly
 from core.index_error import IndexError
-from core.latitude import CalculatedLatitude, Latitude
 from core.declination import Declination
-from core.longitude import Longitude
+from core.coordinate import Longitude, CalculatedLatitude, Latitude
 from core.degree import Degree
 from core.hour_angles import GreenwhichHourAngle, LocaleHourAngle
 from core.compass_calculator import CompassCalculator
