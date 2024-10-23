@@ -83,5 +83,59 @@ class TestDegree(unittest.TestCase):
         self.assertEqual(result.decimal, 15.25)
         self.assertEqual(str(result), "015°15'00.00\"")
 
+    def test_positive_degree(self):
+        degree = Degree("37°49.3'")
+        self.assertAlmostEqual(degree.decimal, 37.82166667, places=6, msg="Positive degree conversion failed")
+        self.assertEqual(str(degree), "037°49'18.00\"", "Positive degree string format failed")
+    
+    def test_negative_degree(self):
+        degree = Degree("-37°49.3'")
+        self.assertAlmostEqual(degree.decimal, -37.82166667, places=6, msg="Negative degree conversion failed")
+        self.assertEqual(str(degree), "-037°49'18.00\"", "Negative degree string format failed")
+    
+    def test_negative_with_direction(self):
+        degree = Degree("37°49.3'S")
+        self.assertAlmostEqual(degree.decimal, -37.82166667, places=6, msg="Negative degree with direction (South) conversion failed")
+        self.assertEqual(str(degree), "037°49'18.00\"", "Negative degree with direction (South) string format failed")
+    
+    def test_positive_with_direction(self):
+        degree = Degree("37°49.3'N")
+        self.assertAlmostEqual(degree.decimal, 37.82166667, places=6, msg="Positive degree with direction (North) conversion failed")
+        self.assertEqual(str(degree), "037°49'18.00\"", "Positive degree with direction (North) string format failed")
+    
+    def test_zero_degree(self):
+        degree = Degree("00°00.0'")
+        self.assertAlmostEqual(degree.decimal, 0.0, places=6, msg="Zero degree conversion failed")
+        self.assertEqual(str(degree), "000°00'00.00\"", "Zero degree string format failed")
+    
+    def test_add_degrees(self):
+        degree1 = Degree("37°49.3'")
+        degree2 = Degree("2°30.0'")
+        result = degree1 + degree2
+        self.assertAlmostEqual(result.decimal, 40.32166667, places=6, msg="Addition of degrees failed")
+        self.assertEqual(str(result), "040°19'18.00\"", "Addition result string format failed")
+    
+    def test_subtract_degrees(self):
+        degree1 = Degree("37°49.3'")
+        degree2 = Degree("2°30.0'")
+        result = degree1 - degree2
+        self.assertAlmostEqual(result.decimal, 35.32166667, places=6, msg="Subtraction of degrees failed")
+        self.assertEqual(str(result), "035°19'18.00\"", "Subtraction result string format failed")
+    
+    def test_multiply_degree_by_scalar(self):
+        degree = Degree("37°49.3'")
+        result = degree * 2
+        self.assertAlmostEqual(result.decimal, 75.64333333, places=6, msg="Multiplication by scalar failed")
+        self.assertEqual(str(result), "075°38'36.00\"", "Multiplication result string format failed")
+
+    def test_invalid_input(self):
+        with self.assertRaises(ValueError):
+            Degree("Invalid input")
+
+    def test_zero_division_error(self):
+        degree = Degree("37°49.3'")
+        with self.assertRaises(ZeroDivisionError):
+            result = degree / 0
+
 if __name__ == '__main__':
     unittest.main()

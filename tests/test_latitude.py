@@ -1,5 +1,5 @@
 import unittest
-from core.latitude import Latitude, CalculatedLatitude
+from core.coordinate import Latitude, CalculatedLatitude
 from core.helper import Helper
 from core.degree import Degree
 from core.altitude import AltitudeTrue

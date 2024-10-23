@@ -1,5 +1,5 @@
 import unittest
-from core.corrections import CorrectionDIP, CorrectionMonthly, CorrectionSum
+from core.corrections import AltitudeCorrectionDIP, AltitudeCorrectionMonthly, AltitudeCorrection
 from core.index_error import IndexError
 from core.altitude import Altitude, AltitudeSextant, AltitudeObserved, AltitudeTrue
 from core.degree import Degree
@@ -55,12 +55,12 @@ class TestAltitude(unittest.TestCase):
         self.assertEqual(str(altitude_true), "True Altitude (TA): 60°00'00.00\"", "Failed for direct True Altitude.")
 
     def test_true_altitude_calculated(self):
-        # Instantiate CorrectionMonthly and CorrectionDIP objects with appropriate values
-        correction_monthly = CorrectionMonthly(0.5) # Example monthly correction
-        correction_dip = CorrectionDIP(0.3)         # Example DIP correction
+        # Instantiate AltitudeCorrectionMonthly and AltitudeCorrectionDIP objects with appropriate values
+        correction_monthly = AltitudeCorrectionMonthly(0.5) # Example monthly correction
+        correction_dip = AltitudeCorrectionDIP(0.3)         # Example DIP correction
 
-        # Pass these to CorrectionSum
-        correction_sum = CorrectionSum(correction_monthly, correction_dip)  # Total correction sum is 2.8
+        # Pass these to AltitudeCorrection
+        correction_sum = AltitudeCorrection(correction_monthly, correction_dip)  # Total correction sum is 2.8
 
         # Calculate true altitude based on sextant altitude and corrections
         sextant_altitude = AltitudeSextant(77.0)  # Example sextant altitude
@@ -78,12 +78,12 @@ class TestAltitudeCalculation(unittest.TestCase):
         # Input values
         sextant_altitude = AltitudeSextant("77°00'")
         index_error = IndexError("00°00'")
-        dip_correction = CorrectionDIP("00°12.7'")
-        monthly_correction = CorrectionMonthly("00°00.1'")
+        dip_correction = AltitudeCorrectionDIP("00°12.7'")
+        monthly_correction = AltitudeCorrectionMonthly("00°00.1'")
 
         # Expected values
         expected_observed_altitude = "Observed Altitude (OA): 77°00'00.00\""
-        expected_correction_sum = "Correction Sum: 000°12'48.00\""
+        expected_correction_sum = "000°12'48.00\""
         expected_true_altitude = "True Altitude (TA): 77°12'48.00\""
 
         # Calculating the observed altitude (OA)
@@ -91,7 +91,7 @@ class TestAltitudeCalculation(unittest.TestCase):
         self.assertEqual(str(observed_altitude), expected_observed_altitude, "Error in calculating observed altitude (Observed Altitude)")
 
         # Corrections (DIP + Monthly)
-        correction_sum = CorrectionSum(monthly_correction, dip_correction)
+        correction_sum = AltitudeCorrection(monthly_correction, dip_correction)
         self.assertEqual(str(correction_sum), expected_correction_sum, "Error in calculating the total correction (Correction Sum)")
 
         # Calculating the true altitude (TA)

@@ -4,19 +4,22 @@ from .altitude import AltitudeTrue
 from .declination import Declination
 from .zenith_distance import ZenithDistance
 
-class Latitude(Degree):
+class Coordinate(Degree):
+    def decimal_to_ddmmss(self) -> str:
+        return super().decimal_to_ddmmss().lstrip("-")
+
+class Latitude(Coordinate):
     def __init__(self, value):
         super().__init__(value)
         if not (Degree(-90) <= self <= Degree(90)):
             raise ValueError(f"Latitude must be between -90° and 90°, but got {value}")
-        self.string = Helper.ensure_two_digit_degrees(Latitude.decimal_to_ddmmss(self.decimal))
+        self.string = Helper.ensure_two_digit_degrees(self.decimal_to_ddmmss())
 
     """Represents a Latitude value in degrees."""
-    @staticmethod
-    def decimal_to_ddmmss(decimal_degrees: float) -> str:
+    def decimal_to_ddmmss(self) -> str:
         """Convert a decimal degree to a D°M'S" format with N/S direction."""
-        direction = 'N' if decimal_degrees >= 0 else 'S'
-        ddmmss_format = Degree.decimal_to_ddmmss(decimal_degrees)
+        direction = 'N' if self.decimal >= 0 else 'S'
+        ddmmss_format = super().decimal_to_ddmmss()
         return f"{ddmmss_format}{direction}"
 
 class CalculatedLatitude(Latitude):
@@ -39,5 +42,19 @@ class CalculatedLatitude(Latitude):
         else:
             return self.zenith_distance + self.declination
             
+class Longitude(Coordinate):
+    """
+    Represents a Longitude value in degrees.
+    @see https://en.wikipedia.org/wiki/Longitude
+    """
+    def __init__(self, value):
+        super().__init__(value)
+        if not (Degree(-180) <= self <= Degree(180)):
+            raise ValueError(f"Longitude must be between -180° and 180°, but got {value}")
+        self.string = self.decimal_to_ddmmss()
 
-
+    def decimal_to_ddmmss(self) -> str:
+        """Convert a decimal degree to a D°M'S" format with E/W direction."""
+        direction = 'E' if self.decimal >= 0 else 'W'
+        ddmmss_format = super().decimal_to_ddmmss()
+        return f"{ddmmss_format}{direction}"

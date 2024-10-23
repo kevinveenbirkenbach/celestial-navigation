@@ -1,6 +1,6 @@
 from core.time import UTCDatetime, ArcToTime, TransitTime, ObservationTime
 from core.altitude import AltitudeObserved, AltitudeSextant, AltitudeTrue, Altitude
-from core.corrections import CorrectionSum, CorrectionDIP, CorrectionMonthly
+from core.corrections import AltitudeCorrection, AltitudeCorrectionDIP, AltitudeCorrectionMonthly
 from core.index_error import IndexError
 from core.latitude import CalculatedLatitude, Latitude
 from core.declination import Declination
@@ -88,16 +88,25 @@ def calculate_altitude():
     observed_altitude = AltitudeObserved(altitude_sextant, index_error)
     print(observed_altitude)
 
-    correction_dip = CorrectionDIP(
-        input("Enter DIP Correction (in D°M'S\" format): ")
-    )
-    correction_monthly = CorrectionMonthly(
-        input("Enter Monthly Correction (in D°M'S\" format): ")
-    )
-    correction_sum = CorrectionSum(correction_monthly, correction_dip)
-    print(correction_sum)
+    altitude_correction_string = input("Enter Total Correction (in D°M'S\" format): ")
 
-    true_altitude = AltitudeTrue(altitude_sextant, correction_sum)
+    if bool(altitude_correction_string):
+        altitude_correction = AltitudeCorrection(altitude_correction_string)
+    else:
+        correction_dip = AltitudeCorrectionDIP(
+            input("Enter DIP Correction (in D°M'S\" format): ")
+        )
+        
+        correction_dip = AltitudeCorrectionDIP(
+            input("Enter DIP Correction (in D°M'S\" format): ")
+        )
+        correction_monthly = AltitudeCorrectionMonthly(
+            input("Enter Monthly Correction (in D°M'S\" format): ")
+        )
+        altitude_correction = AltitudeCorrection(correction_monthly, correction_dip)
+    print(f"Altitude Correction: {altitude_correction}")
+
+    true_altitude = AltitudeTrue(altitude_sextant, altitude_correction)
     print(true_altitude)
     
     return true_altitude
@@ -129,13 +138,7 @@ def determine_known_values():
     }
 
     # Mark known values
-    known_values = {key: bool(value) for key, value in values.items()}
-
-    # Convert entered values to floats if provided
-    for key, value in values.items():
-        if value:
-            values[key] = value
-    
+    known_values = {key: bool(value) for key, value in values.items()} 
     return known_values, values
 
 def compass_values():

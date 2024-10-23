@@ -14,7 +14,7 @@ class Degree:
             raise TypeError(f"The value '{value}' is of the wrong type: {type(value).__name__}.")
         self.raw_decimal = angle #contains the non-normalized angle
         self.decimal = Degree.normalize_angle(angle)
-        self.string = Degree.decimal_to_ddmmss(self.decimal)
+        self.string = self.decimal_to_ddmmss()
 
     @staticmethod
     def is_number(value):
@@ -54,10 +54,15 @@ class Degree:
         seconds = float(match.group('seconds')) if match.group('seconds') else 0
         direction = match.group('direction')
         
+        # If the degrees are negative, apply the negative sign to minutes and seconds as well
+        if degrees < 0:
+            minutes = -minutes
+            seconds = -seconds
+
         # Calculate the decimal degree
         decimal_degrees = degrees + minutes / 60 + seconds / 3600
 
-        # Adjust the sign based on the direction
+        # Adjust the sign based on the direction, if provided (N, S, E, W)
         if direction in ['W', 'S']:
             decimal_degrees = -abs(decimal_degrees)  # West and South should be negative
         elif direction in ['E', 'N']:
@@ -65,14 +70,17 @@ class Degree:
         
         return decimal_degrees
     
-    @staticmethod
-    def decimal_to_ddmmss(decimal_degrees: float) -> str:
+    def decimal_to_ddmmss(self) -> str:
         """
         Convert a decimal degree value to a D°M'S" string format without the direction.
         Subclasses should override this method to provide direction-specific formatting.
         """
 
-        abs_degrees = abs(decimal_degrees)
+        if self.decimal < 0:
+            prefix = "-"
+        else:
+            prefix = ""
+        abs_degrees = abs(self.decimal)
 
         # Extract degrees, minutes, and seconds
         degrees = int(abs_degrees)
@@ -90,7 +98,7 @@ class Degree:
             degrees += 1
 
         # Format into D°M'S" format (without direction)
-        return f"{degrees:03d}°{minutes:02d}'{seconds:05.2f}\""
+        return f"{prefix}{degrees:03d}°{minutes:02d}'{seconds:05.2f}\""
     
     def __add__(self, other):
         if not isinstance(other, Degree):

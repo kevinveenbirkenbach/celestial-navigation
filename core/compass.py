@@ -1,5 +1,5 @@
 from .degree import Degree
-from .longitude import Longitude
+from .coordinate import Longitude
 
 # Created with the help of CHAT GPT @see https://chatgpt.com/share/6717189c-905c-800f-8146-1a25ea76428c
 class Compass(Degree):

@@ -1,6 +1,6 @@
 from .degree import Degree
 from .index_error import IndexError
-from .corrections import CorrectionSum
+from .corrections import AltitudeCorrection
 from .helper import Helper
 
 class Altitude(Degree):
