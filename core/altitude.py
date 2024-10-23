@@ -23,9 +23,7 @@ class AltitudeSextant(Altitude):
         
 class AltitudeObserved(Altitude):
     def __init__(self, altitude_sextant: AltitudeSextant, index_error: IndexError):
-        super().__init__(altitude_sextant + index_error)
-    def __str__(self):
-        return f"Observed Altitude (OA): {self.string}"
+        super().__init__(altitude_sextant.decimal + index_error.decimal)
 
 class AltitudeTrue(Altitude):
     def __init__(self, *args):

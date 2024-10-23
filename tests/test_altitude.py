@@ -11,7 +11,7 @@ class TestAltitudeObserved(unittest.TestCase):
         index_error = IndexError(1.5)  # Small index error
         observed_altitude = AltitudeObserved(altitude_sextant, index_error)
         self.assertEqual(observed_altitude.decimal, 51.5)
-        self.assertEqual(str(observed_altitude), "Observed Altitude (OA): 51°30'00.00\"", "Failed for Observed Altitude.")
+        self.assertEqual(str(observed_altitude), "51°30'00.00\"", "Failed for Observed Altitude.")
 
     def test_altitude_calculation(self):
         # Convert the string to decimal degrees
@@ -22,8 +22,21 @@ class TestAltitudeObserved(unittest.TestCase):
         index_error = IndexError(0.0)  # No index error
 
         observed_altitude = AltitudeObserved(sextant_altitude, index_error)
-        self.assertEqual(str(observed_altitude), "Observed Altitude (OA): 77°00'00.00\"", "Failed for observed altitude calculation")
+        self.assertEqual(str(observed_altitude), "77°00'00.00\"", "Failed for observed altitude calculation")
 
+    def test_observed_altitude_with_negativ_index_error_str(self):
+        expected_observed_altitude = "77°00'00.00\""
+        sextant_altitude = AltitudeSextant("77°00.3'")
+        index_error = IndexError("-00°00.3'")
+        altitude_observed = AltitudeObserved(sextant_altitude,index_error)
+        self.assertEqual(str(altitude_observed),expected_observed_altitude)
+
+def test_observed_altitude_negative_indexerror(self):
+        # Test Observed Altitude, which adds index error to sextant altitude
+        altitude_sextant = AltitudeSextant(50)
+        index_error = IndexError(-1.5)  # Small index error
+        observed_altitude = AltitudeObserved(altitude_sextant, index_error)
+        self.assertEqual(observed_altitude.decimal, 48.5)
 
 class TestAltitude(unittest.TestCase):
 
@@ -74,6 +87,7 @@ class TestAltitude(unittest.TestCase):
             AltitudeTrue(1, 2, 3)
 class TestAltitudeCalculation(unittest.TestCase):
 
+
     def test_altitude_calculation(self):
         # Input values
         sextant_altitude = AltitudeSextant("77°00'")
@@ -82,7 +96,7 @@ class TestAltitudeCalculation(unittest.TestCase):
         monthly_correction = AltitudeCorrectionMonthly("00°00.1'")
 
         # Expected values
-        expected_observed_altitude = "Observed Altitude (OA): 77°00'00.00\""
+        expected_observed_altitude = "77°00'00.00\""
         expected_correction_sum = "000°12'48.00\""
         expected_true_altitude = "True Altitude (TA): 77°12'48.00\""
 

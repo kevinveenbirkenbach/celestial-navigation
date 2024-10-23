@@ -66,13 +66,12 @@ class Degree:
             raise ValueError(f"Invalid seconds value '{seconds}' in '{input_str}'. Seconds must be between 0 and 59.")
         
         # If the degrees are negative, apply the negative sign to minutes and seconds as well
-        if degrees < 0:
+        if input_str[0] == '-':
             minutes = -minutes
             seconds = -seconds
 
         # Calculate the decimal degree
         decimal_degrees = degrees + minutes / 60 + seconds / 3600
-        
         return decimal_degrees
 
     def decimal_to_ddmmss(self) -> str:
