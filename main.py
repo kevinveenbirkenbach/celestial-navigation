@@ -1,6 +1,6 @@
 from core.time import UTCDatetime, ArcToTime, TransitTime, ObservationTime
-from core.altitude import AltitudeObserved, AltitudeSextant, AltitudeTrue, Altitude
-from core.corrections import ObservedAltitudeCorrection, ObservedAltitudeCorrectionDIP, ObservedAltitudeCorrectionMonthly
+from core.altitude import AltitudeObserved, AltitudeSextant, AltitudeTrue, Altitude, AltitudeApperant
+from core.corrections import ObservedAltitudeCorrection, ObservedAltitudeCorrectionDIP, ObservedAltitudeCorrectionMonthly, ApparentAltitudeCorrection
 from core.index_error import IndexError
 from core.coordinates_celestial import Declination
 from core.coordinates_geographic import Longitude, CalculatedLatitude, Latitude
@@ -85,7 +85,7 @@ def calculate_altitude():
     )
 
     observed_altitude = AltitudeObserved(altitude_sextant, index_error)
-    print(observed_altitude)
+    print(f"Observed Altitute (OA): {observed_altitude}")
 
     observed_altitude_correction_string = input("Enter Total Correction (in D°M'S\" format): ")
 
@@ -100,9 +100,15 @@ def calculate_altitude():
         )
         observed_altitude_correction = ObservedAltitudeCorrection(correction_monthly, correction_dip)
     print(f"Observed Altitude Correction: {observed_altitude_correction}")
+    
+    apparant_altitude = AltitudeApperant(observed_altitude, observed_altitude_correction)
+    print(f"Apparant Altitute: {apparant_altitude}")
 
-    true_altitude = AltitudeTrue(altitude_sextant, observed_altitude_correction)
-    print(true_altitude)
+    apparant_altitude_correction_string = input("Enter Apparent Correction (in D°M'S\" format): ")
+    apparant_altitude_correction = ApparentAltitudeCorrection(apparant_altitude_correction_string)
+
+    true_altitude = AltitudeTrue(apparant_altitude, apparant_altitude_correction)
+    print(f"True Altitude (TA): {true_altitude}")
     
     return true_altitude
 
